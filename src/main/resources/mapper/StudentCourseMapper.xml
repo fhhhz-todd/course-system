@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.course.mapper.StudentCourseMapper">
+
+    <!-- student_id 在表中是 varchar(20)，这里也用 String，避免类型转换错误 -->
+    <select id="selectStudentIdsByCourseId" resultType="java.lang.String">
+        SELECT sc.student_id FROM student_course sc WHERE sc.course_id = #{courseId}
+    </select>
+</mapper>

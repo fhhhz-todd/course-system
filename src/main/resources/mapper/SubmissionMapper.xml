@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.course.mapper.SubmissionMapper">
+
+    <select id="getSubmissionsByStudentId" resultType="com.example.course.vo.SubmissionVO">
+        SELECT s.id, s.assignment_id, a.title AS assignment_title, s.student_id, u.real_name AS student_name,
+               s.content, s.attachment_path, s.score, s.comment, s.status, s.create_time, s.update_time
+        FROM submission s
+        LEFT JOIN assignment a ON s.assignment_id = a.id
+        LEFT JOIN "USER" u ON s.student_id = u.id
+        WHERE s.student_id = #{studentId}
+    </select>
+
+    <select id="getSubmissionsByAssignmentId" resultType="com.example.course.vo.SubmissionVO">
+        SELECT s.id, s.assignment_id, a.title AS assignment_title, s.student_id, u.real_name AS student_name,
+               s.content, s.attachment_path, s.score, s.comment, s.status, s.create_time, s.update_time
+        FROM submission s
+        LEFT JOIN assignment a ON s.assignment_id = a.id
+        LEFT JOIN "USER" u ON s.student_id = u.id
+        WHERE s.assignment_id = #{assignmentId}
+    </select>
+    
+    <select id="getSubmissionById" resultType="com.example.course.vo.SubmissionVO">
+        SELECT s.id, s.assignment_id, a.title AS assignment_title, s.student_id, u.real_name AS student_name,
+               s.content, s.attachment_path, s.score, s.comment, s.status, s.create_time, s.update_time
+        FROM submission s
+        LEFT JOIN assignment a ON s.assignment_id = a.id
+        LEFT JOIN "USER" u ON s.student_id = u.id
+        WHERE s.id = #{submissionId}
+    </select>
+</mapper>

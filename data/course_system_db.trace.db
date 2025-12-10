@@ -1,0 +1,33 @@
+2026-01-14 14:53:56 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "adm00001"; SQL statement:
+MERGE INTO "USER" (id, username, password, real_name, role) KEY(id) VALUES ('adm00001', 'admin', '0192023a7bbd73250516f069df18b500', 'System Administrator', 1) [22018-214]
+2026-01-14 14:53:56 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "tea00001"; SQL statement:
+MERGE INTO "USER" (id, username, password, real_name, role) KEY(id) VALUES ('tea00001', 'teacher1', 'e10adc3949ba59abbe56e057f20f883e', 'Teacher Zhang', 2) [22018-214]
+2026-01-14 14:53:56 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001"; SQL statement:
+MERGE INTO "USER" (id, username, password, real_name, role) KEY(id) VALUES ('stu00001', 'student1', 'e10adc3949ba59abbe56e057f20f883e', 'Student Zhang', 3) [22018-214]
+2026-01-14 14:54:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001"; SQL statement:
+SELECT  id,username,password,real_name,role,create_time,update_time  FROM "USER"      WHERE  (id = ?) [22018-214]
+2026-01-14 14:54:17 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001"; SQL statement:
+SELECT  id,username,password,real_name,role,create_time,update_time  FROM "USER"      WHERE  (id = ?) [22018-214]
+2026-01-14 15:06:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:06:18 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:07:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:07:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:07:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:08:04 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:08:14 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:08:16 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]
+2026-01-14 15:08:44 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "stu00001" [22018-214]

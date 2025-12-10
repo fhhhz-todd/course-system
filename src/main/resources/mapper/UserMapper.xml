@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.course.mapper.UserMapper">
+
+    <select id="getTeacherCourses" resultType="com.example.course.vo.CourseVO">
+        SELECT c.id, c.course_name, c.description, c.teacher_id, u.real_name AS teacher_name
+        FROM course c
+        LEFT JOIN "USER" u ON c.teacher_id = u.id
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+    <select id="getTeacherCourses" resultType="com.example.course.vo.CourseVO">
+        SELECT c.id, c.course_name, c.description, c.teacher_id, u.real_name AS teacher_name
+        FROM course c
+        LEFT JOIN "USER" u ON c.teacher_id = u.id
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+    
+    <select id="getStudentCourseCount" resultType="int">
+        SELECT COUNT(*)
+        FROM student_course sc
+        WHERE sc.student_id = #{studentId}
+    </select>
+    
+    <select id="getTeacherCourseCount" resultType="int">
+        SELECT COUNT(*)
+        FROM course c
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+
+</mapper>

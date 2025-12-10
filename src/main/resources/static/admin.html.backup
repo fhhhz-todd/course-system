@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统 - 管理员主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        /* 功能菜单 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 我的信息样式 */
+        .profile-info {
+            text-align: center;
+        }
+        
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            max-width: 400px;
+            margin: 15px auto;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-group label {
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            flex: 1;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* 隐藏内容区域 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shield-halved"></i> TQMS
+        </div>
+        <button class="menu-item active" data-target="dashboard">
+            <i class="fas fa-home"></i> 首页
+        </button>
+        <button class="menu-item" data-target="profile">
+            <i class="fas fa-user"></i> 我的信息
+        </button>
+        <button class="menu-item" data-target="courses">
+            <i class="fas fa-book-open"></i> 课程管理
+        </button>
+
+        <button class="menu-item" data-target="students">
+            <i class="fas fa-user-shield"></i> 管理员管理
+        </button>
+        <button class="menu-item" data-target="teachers">
+            <i class="fas fa-info-circle"></i> 系统信息
+        </button>
+        <button class="menu-item" data-target="messages">
+            <i class="fas fa-envelope"></i> 我的消息
+        </button>
+        
+        <button class="menu-item logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">管理员主页</h1>
+            <div class="user-info">
+                <span id="user-role">管理员</span>
+                <div class="avatar" id="user-avatar">A</div>
+            </div>
+        </div>
+
+        <!-- 首页内容 -->
+        <div id="dashboard" class="content-section active">
+            <div class="card">
+                <h2>欢迎使用课程管理系统</h2>
+                <p>您好，管理员！在这里您可以管理系统的所有信息。</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card" data-target="profile">
+                        <div class="feature-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="feature-title">我的信息</div>
+                        <div class="feature-desc">查看和修改个人信息</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="courses">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="feature-title">课程管理</div>
+                        <div class="feature-desc">管理所有课程信息</div>
+                    </div>
+                    
+
+                    
+                    <div class="feature-card" data-target="students">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="feature-title">管理员管理</div>
+                        <div class="feature-desc">管理管理员账户</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="teachers">
+                        <div class="feature-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="feature-title">系统信息</div>
+                        <div class="feature-desc">查看系统统计信息</div>
+                    </div>
+                    <div class="feature-card" data-target="messages">
+                        <div class="feature-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="feature-title">我的消息</div>
+                        <div class="feature-desc">查看系统消息</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的信息内容 -->
+        <div id="profile" class="content-section">
+            <div class="card">
+                <h2>我的信息</h2>
+                <div class="profile-info">
+                    <div class="avatar-large" id="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; background: #e0e5f2; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--primary-color); margin: 0 auto 20px;"></div>
+                    <div class="info-group">
+                        <label>用户名:</label>
+                        <span id="profile-username"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>真实姓名:</label>
+                        <span id="profile-realname"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>角色:</label>
+                        <span>管理员</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn-select" onclick="window.location.href='profile-edit.html'" style="margin: 0 10px;">修改个人信息</button>
+                    <button class="btn-select" onclick="window.location.href='password-change.html'" style="margin: 0 10px;">修改密码</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程管理内容 -->
+        <div id="courses" class="content-section">
+            <div class="card">
+                <h2>课程管理</h2>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="course-search" placeholder="搜索课程...">
+                    </div>
+                    <button class="btn-select" onclick="searchCourses()">搜索</button>
+                </div>
+                <div id="courses-list">
+                    <p>加载中...</p>
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                
+                <h3>添加新课程</h3>
+                <div class="form-group">
+                    <label for="course-code">课程编号</label>
+                    <input type="text" id="course-code" placeholder="请输入课程编号">
+                </div>
+                <div class="form-group">
+                    <label for="course-name">课程名称</label>
+                    <input type="text" id="course-name" placeholder="请输入课程名称">
+                </div>
+                <div class="form-group">
+                    <label for="course-credits">学分</label>
+                    <input type="number" id="course-credits" placeholder="请输入学分" value="3">
+                </div>
+                <div class="form-group">
+                    <label for="course-description">课程描述</label>
+                    <textarea id="course-description" rows="3" placeholder="请输入课程描述" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="course-teacher">授课教师</label>
+                    <select id="course-teacher" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                        <option value="">请选择教师</option>
+                    </select>
+                </div>
+                <button class="btn-select" onclick="addCourse()">添加课程</button>
+                <div id="course-result" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        
+
+        <!-- 管理员管理内容 -->
+        <div id="students" class="content-section">
+            <div class="card">
+                <h2>管理员管理</h2>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="admin-search" placeholder="搜索管理员...">
+                    </div>
+                    <button class="btn-select" onclick="searchAdmins()">搜索</button>
+                </div>
+                <div id="admins-list">
+                    <p>加载中...</p>
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                
+                <h3>添加新管理员</h3>
+                <div class="form-group">
+                    <label for="admin-username">用户名</label>
+                    <input type="text" id="admin-username" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">密码</label>
+                    <input type="password" id="admin-password" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                    <label for="admin-realname">真实姓名</label>
+                    <input type="text" id="admin-realname" placeholder="请输入真实姓名">
+                </div>
+                <button class="btn-select" onclick="addAdmin()">添加管理员</button>
+                <div id="admin-result" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- 系统信息内容 -->
+        <div id="teachers" class="content-section">
+            <div class="card">
+                <h2>系统信息</h2>
+                <div class="card">
+                    <h3>系统统计</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="padding: 20px; background: #f0f7ff; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #5c4cf4;" id="total-students">0</div>
+                            <div style="color: #a3aed0; margin-top: 5px;">学生总数</div>
+                        </div>
+                        <div style="padding: 20px; background: #f0f7ff; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #5c4cf4;" id="total-teachers">0</div>
+                            <div style="color: #a3aed0; margin-top: 5px;">教师总数</div>
+                        </div>
+                        <div style="padding: 20px; background: #f0f7ff; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #5c4cf4;" id="total-courses">0</div>
+                            <div style="color: #a3aed0; margin-top: 5px;">课程总数</div>
+                        </div>
+                        <div style="padding: 20px; background: #f0f7ff; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #5c4cf4;" id="total-admins">0</div>
+                            <div style="color: #a3aed0; margin-top: 5px;">管理员总数</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h3>系统信息</h3>
+                    <div style="margin-top: 15px;">
+                        <p><strong>系统版本:</strong> 1.0.0</p>
+                        <p><strong>数据库类型:</strong> H2 Database</p>
+                        <p><strong>运行环境:</strong> Java Spring Boot</p>
+                        <p><strong>最后更新:</strong> <span id="last-update">加载中...</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 我的消息内容 -->
+        <div id="messages" class="content-section">
+            <div class="card">
+                <h2>我的消息</h2>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="message-search" placeholder="搜索消息...">
+                    </div>
+                    <button class="btn-select" onclick="searchMessages()">搜索</button>
+                </div>
+                <div id="messages-list">
+                    <p>加载中...</p>
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                
+                <h3>发送消息</h3>
+                <div class="form-group">
+                    <label for="message-type">发送范围</label>
+                    <select id="message-type" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;" onchange="toggleRecipientField()">
+                        <option value="specific">指定用户</option>
+                        <option value="all">所有用户</option>
+                        <option value="teachers">所有教师</option>
+                        <option value="students">所有学生</option>
+                    </select>
+                </div>
+                <div class="form-group" id="recipient-field">
+                    <label for="recipient-user">接收者</label>
+                    <select id="recipient-user" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                        <option value="">请选择接收者</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message-title">标题</label>
+                    <input type="text" id="message-title" placeholder="请输入消息标题">
+                </div>
+                <div class="form-group">
+                    <label for="message-content">内容</label>
+                    <textarea id="message-content" rows="4" placeholder="请输入消息内容" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;"></textarea>
+                </div>
+                <button class="btn-select" onclick="sendMessage()">发送消息</button>
+                <div id="send-message-result" style="margin-top: 15px;"></div>
+                <script>
+                // 加载所有用户用于接收者选择
+                function loadRecipients() {
+                    fetch('/api/users')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 200) {
+                                populateRecipientSelect(data.data);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('加载接收者失败:', error);
+                        });
+                }
+                
+                // 填充接收者选择下拉菜单
+                function populateRecipientSelect(users) {
+                    const recipientSelect = document.getElementById('recipient-user');
+                    
+                    // 清空现有选项
+                    recipientSelect.innerHTML = '<option value="">请选择接收者</option>';
+                    
+                    if (users && users.length > 0) {
+                        users.forEach(user => {
+                            if(user.role !== 1) { // 不包含管理员自己
+                                const option = document.createElement('option');
+                                option.value = user.id;
+                                option.textContent = `${user.realName} (${user.username})`;
+                                recipientSelect.appendChild(option);
+                            }
+                        });
+                    }
+                }
+                
+                // 切换接收者字段显示
+                function toggleRecipientField() {
+                    const messageType = document.getElementById('message-type').value;
+                    const recipientField = document.getElementById('recipient-field');
+                    
+                    if (messageType === 'specific') {
+                        recipientField.style.display = 'block';
+                    } else {
+                        recipientField.style.display = 'none';
+                    }
+                }
+                
+                // 在页面加载完成后加载接收者
+                document.addEventListener('DOMContentLoaded', function() {
+                    loadRecipients();
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            
+            // 加载数据 - 只加载课程、管理员、教师和消息，不加载学生数据
+            loadTeachersForCourseForm(); // 先加载教师列表用于课程表单
+            loadCourses();
+            loadAdmins(); // 加载管理员列表
+            loadTeachers(); // 加载教师列表
+            loadMessages(); // 加载消息列表
+            loadSystemStats(); // 加载系统统计信息
+            
+            console.log('管理员主页已加载');
+            
+            // 添加菜单点击事件
+            document.querySelectorAll('.menu-item[data-target]').forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                    // 更新用户信息显示
+                    if (target === 'profile') {
+                        updateUserInfoDisplay();
+                    }
+                    
+                    // 根据页面类型加载数据
+                    if (target === 'courses') {
+                        loadTeachersForCourseForm(); // 确保教师列表已加载
+                    } else if (target === 'students') { // 'students' 对应管理员管理页面
+                        loadAdmins(); // 加载管理员数据
+                    } else if (target === 'teachers') { // 'teachers' 对应系统信息页面
+                        loadSystemStats(); // 加载系统统计信息
+                    }
+                });
+            });
+            
+            // 添加功能卡片点击事件
+            document.querySelectorAll('.feature-card[data-target]').forEach(card => {
+                card.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                    // 更新用户信息显示
+                    if (target === 'profile') {
+                        updateUserInfoDisplay();
+                    }
+                    
+                    // 根据页面类型加载数据
+                    if (target === 'courses') {
+                        loadTeachersForCourseForm(); // 确保教师列表已加载
+                    } else if (target === 'students') { // 'students' 对应管理员管理页面
+                        loadAdmins(); // 加载管理员数据
+                    } else if (target === 'teachers') { // 'teachers' 对应系统信息页面
+                        loadSystemStats(); // 加载系统统计信息
+                    }
+                });
+            });
+        });
+        
+        // 加载教师列表用于课程表单
+        function loadTeachersForCourseForm() {
+            fetch('/api/users/teachers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        populateTeacherSelect(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载教师列表失败:', error);
+                    // 如果加载失败，使用默认选项
+                    const teacherSelect = document.getElementById('course-teacher');
+                    teacherSelect.innerHTML = '<option value="">请选择教师</option>';
+                });
+        }
+        
+        // 填充教师选择下拉菜单
+        function populateTeacherSelect(teachers) {
+            const teacherSelect = document.getElementById('course-teacher');
+            
+            // 清空现有选项
+            teacherSelect.innerHTML = '<option value="">请选择教师</option>';
+            
+            if (teachers && teachers.length > 0) {
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.realName || teacher.username;
+                    teacherSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // 加载课程列表用于作业表单
+        function loadCoursesForAssignmentForm() {
+            fetch('/api/courses')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        populateCourseSelect(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载课程列表失败:', error);
+                    // 如果加载失败，使用默认选项
+                    const courseSelect = document.getElementById('assignment-course');
+                    courseSelect.innerHTML = '<option value="">请选择课程</option>';
+                });
+        }
+        
+        // 填充课程选择下拉菜单
+        function populateCourseSelect(courses) {
+            const courseSelect = document.getElementById('assignment-course');
+            
+            // 清空现有选项
+            courseSelect.innerHTML = '<option value="">请选择课程</option>';
+            
+            if (courses && courses.length > 0) {
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.courseName || course.courseCode;
+                    courseSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示用户信息
+                document.getElementById('user-role').textContent = '管理员: ' + currentUser.realName;
+                
+                // 显示头像
+                updateAvatarDisplay('user-avatar', currentUser);
+                
+                // 在我的信息页面也显示用户信息
+                updateAvatarDisplay('profile-avatar', currentUser);
+                document.getElementById('profile-username').textContent = currentUser.username;
+                document.getElementById('profile-realname').textContent = currentUser.realName;
+            }
+        }
+        
+        // 更新头像显示的通用函数
+        function updateAvatarDisplay(elementId, user) {
+            const element = document.getElementById(elementId);
+            if (user.avatar) {
+                element.innerHTML = `<img src="${user.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                element.textContent = user.realName.charAt(0);
+            }
+        }
+        
+        // 显示指定的内容区域
+        function showSection(sectionId) {
+            // 隐藏所有内容区域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 移除所有菜单项的激活状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 显示目标内容区域
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 激活对应的菜单项
+            const menuItem = document.querySelector(`.menu-item[data-target="${sectionId}"]`);
+            if (menuItem) {
+                menuItem.classList.add('active');
+            }
+            
+            // 更新页面标题
+            const titles = {
+                'dashboard': '管理员主页',
+                'profile': '我的信息',
+                'courses': '课程管理',
+                'students': '管理员管理',
+                'teachers': '系统信息',
+                'messages': '我的消息'
+            };
+            
+            document.querySelector('.page-title').textContent = titles[sectionId] || '管理员主页';
+            
+            // 根据页面类型加载数据
+            if (sectionId === 'courses') {
+                loadCourses();
+            } else if (sectionId === 'students') { // 'students' 对应管理员管理页面
+                loadAdmins();
+            } else if (sectionId === 'teachers') { // 'teachers' 对应系统信息页面
+                loadSystemStats();
+            } else if (sectionId === 'messages') {
+                loadMessages();
+            }
+        }
+        
+        // 加载课程数据
+        function loadCourses() {
+            fetch('/api/courses')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayCourses(data.data);
+                    } else {
+                        document.getElementById('courses-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程数据失败:', error);
+                    document.getElementById('courses-list').innerHTML = '<p>加载课程数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示课程列表
+        function displayCourses(courses) {
+            const coursesList = document.getElementById('courses-list');
+            
+            if (!courses || courses.length === 0) {
+                coursesList.innerHTML = '<p>暂无课程数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">课程编号</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">课程名称</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">学分</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">授课教师</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">学生人数</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            courses.forEach(course => {
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.courseCode || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.courseName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.credits || 0}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.teacherName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.studentCount || 0}人</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px;" onclick="deleteCourse(${course.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            coursesList.innerHTML = tableHtml;
+        }
+        
+        // 搜索课程
+        function searchCourses() {
+            const searchTerm = document.getElementById('course-search').value.toLowerCase();
+            // 模拟搜索功能
+            loadCourses(); // 实际项目中应根据搜索词筛选数据
+        }
+        
+        // 添加课程
+        function addCourse() {
+            const courseName = document.getElementById('course-name').value;
+            const courseCode = document.getElementById('course-code').value || courseName.substring(0, 10);
+            const courseDescription = document.getElementById('course-description').value;
+            const courseTeacher = document.getElementById('course-teacher').value;
+            const credits = document.getElementById('course-credits').value || 3;
+            const resultElement = document.getElementById('course-result');
+            
+            if (!courseName || !courseTeacher) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写课程名称和选择授课教师</p>';
+                return;
+            }
+            
+            const courseData = {
+                courseCode: courseCode,
+                courseName: courseName,
+                description: courseDescription,
+                teacherId: parseInt(courseTeacher),
+                credits: parseInt(credits)
+            };
+            
+            fetch('/api/courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">课程添加成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('course-name').value = '';
+                    document.getElementById('course-code').value = '';
+                    document.getElementById('course-description').value = '';
+                    document.getElementById('course-teacher').value = '';
+                    document.getElementById('course-credits').value = '3';
+                    
+                    // 重新加载课程列表
+                    loadCourses();
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">添加失败: ' + data.msg + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('添加课程失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">添加课程失败，请稍后重试</p>';
+            });
+        }
+        
+        // 删除课程
+        function deleteCourse(courseId) {
+            if (confirm("确定要删除这个课程吗？")) {
+                fetch(`/api/courses/${courseId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("课程删除成功！");
+                        loadCourses();
+                    } else {
+                        alert("课程删除失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('删除课程失败:', error);
+                    alert("删除课程失败，请稍后重试");
+                });
+            }
+        }
+        
+
+        
+        // 加载学生数据
+        function loadStudents() {
+            fetch('/api/users/students')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayStudents(data.data);
+                    } else {
+                        document.getElementById('students-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取学生数据失败:', error);
+                    document.getElementById('students-list').innerHTML = '<p>加载学生数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示学生列表
+        function displayStudents(students) {
+            const studentsList = document.getElementById('students-list');
+            
+            if (!students || students.length === 0) {
+                studentsList.innerHTML = '<p>暂无学生数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">选课数量</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            students.forEach(student => {
+                // 获取学生选课数量
+                fetch(`/api/users/${student.id}/course-count`)
+                    .then(response => response.json())
+                    .then(countData => {
+                        if (countData.code === 200) {
+                            const courseCount = countData.data || 0;
+                            
+                            // 重新获取表格并更新
+                            updateStudentRow(student.id, student.username, student.realName, student.createTime, courseCount);
+                        } else {
+                            // 如果获取失败，使用默认值
+                            updateStudentRow(student.id, student.username, student.realName, student.createTime, 0);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取学生选课数量失败:', error);
+                        // 如果出错，使用默认值
+                        updateStudentRow(student.id, student.username, student.realName, student.createTime, 0);
+                    });
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            studentsList.innerHTML = tableHtml;
+        }
+        
+        // 更新学生行的函数
+        function updateStudentRow(studentId, username, realName, createTime, courseCount) {
+            const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+            if (!row) {
+                // 如果行不存在，创建一个临时行来更新表格
+                const tableBody = document.querySelector('#students-list tbody');
+                if (tableBody) {
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-student-id', studentId);
+                    newRow.innerHTML = `
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${username || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${realName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${createTime ? new Date(createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${courseCount}门</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="deleteUser(${studentId}, '${username}', 'student')">删除</button>
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="resetStudentPassword(${studentId})">重置密码</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                }
+            } else {
+                // 如果行存在，直接更新选课数量列
+                const cells = row.cells;
+                cells[3].textContent = `${courseCount}门`;
+            }
+        }
+        
+        // 重新定义显示学生列表的函数以正确处理异步请求
+        async function displayStudents(students) {
+            const studentsList = document.getElementById('students-list');
+            
+            if (!students || students.length === 0) {
+                studentsList.innerHTML = '<p>暂无学生数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">选课数量</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // 先生成所有行的基础HTML
+            students.forEach(student => {
+                tableHtml += `
+                    <tr data-student-id="${student.id}">
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${student.username || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${student.realName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${student.createTime ? new Date(student.createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">加载中...</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="deleteUser(${student.id}, '${student.username}', 'student')">删除</button>
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="resetStudentPassword(${student.id})">重置密码</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            studentsList.innerHTML = tableHtml;
+            
+            // 然后异步更新每行的选课数量
+            for (const student of students) {
+                try {
+                    const response = await fetch(`/api/users/${student.id}/course-count`);
+                    const countData = await response.json();
+                    const courseCount = countData.code === 200 ? (countData.data || 0) : 0;
+                    
+                    // 更新对应行的选课数量
+                    const row = document.querySelector(`tr[data-student-id="${student.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `${courseCount}门`;
+                    }
+                } catch (error) {
+                    console.error('获取学生选课数量失败:', error);
+                    
+                    // 更新对应行的选课数量为0
+                    const row = document.querySelector(`tr[data-student-id="${student.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `0门`;
+                    }
+                }
+            }
+        }
+        
+        // 搜索学生
+        function searchStudents() {
+            const searchTerm = document.getElementById('student-search').value.toLowerCase();
+            
+            fetch(`/api/users/students/search?keyword=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayStudents(data.data);
+                    } else {
+                        document.getElementById('students-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索学生失败:', error);
+                    loadStudents(); // 回退到加载全部学生
+                });
+        }
+        
+        // 添加学生
+        function addStudent() {
+            const username = document.getElementById('student-username').value;
+            const password = document.getElementById('student-password').value;
+            const realname = document.getElementById('student-realname').value;
+            const resultElement = document.getElementById('student-result');
+            
+            if (!username || !password || !realname) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有字段</p>';
+                return;
+            }
+            
+            const userData = {
+                username: username,
+                password: password,
+                realName: realname,
+                role: 3 // 学生权限
+            };
+            
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">学生添加成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('student-username').value = '';
+                    document.getElementById('student-password').value = '';
+                    document.getElementById('student-realname').value = '';
+                    
+                    // 重新加载学生列表
+                    loadStudents();
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">添加失败: ' + data.msg + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('添加学生失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">添加学生失败，请稍后重试</p>';
+            });
+        }
+        
+        // 删除学生 - 现在使用统一的删除用户函数
+        function deleteStudent(studentId) {
+            deleteUser(studentId, '', 'student');
+        }
+        
+        // 加载教师数据
+        function loadTeachers() {
+            fetch('/api/users/teachers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayTeachers(data.data);
+                    } else {
+                        document.getElementById('teachers-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取教师数据失败:', error);
+                    document.getElementById('teachers-list').innerHTML = '<p>加载教师数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示教师列表
+        async function displayTeachers(teachers) {
+            const teachersList = document.getElementById('teachers-list');
+            
+            if (!teachers || teachers.length === 0) {
+                teachersList.innerHTML = '<p>暂无教师数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">任课数量</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // 先生成所有行的基础HTML
+            teachers.forEach(teacher => {
+                tableHtml += `
+                    <tr data-teacher-id="${teacher.id}">
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.username || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.realName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.createTime ? new Date(teacher.createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">加载中...</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="deleteUser(${teacher.id}, '${teacher.username}', 'teacher')">删除</button>
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="resetTeacherPassword(${teacher.id})">重置密码</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            teachersList.innerHTML = tableHtml;
+            
+            // 然后异步更新每行的任课数量
+            for (const teacher of teachers) {
+                try {
+                    const response = await fetch(`/api/users/${teacher.id}/course-count`);
+                    const countData = await response.json();
+                    const courseCount = countData.code === 200 ? (countData.data || 0) : 0;
+                    
+                    // 更新对应行的任课数量
+                    const row = document.querySelector(`tr[data-teacher-id="${teacher.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `${courseCount}门`;
+                    }
+                } catch (error) {
+                    console.error('获取教师任课数量失败:', error);
+                    
+                    // 更新对应行的任课数量为0
+                    const row = document.querySelector(`tr[data-teacher-id="${teacher.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `0门`;
+                    }
+                }
+            }
+        }
+        
+        // 搜索教师
+        function searchTeachers() {
+            const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
+            
+            fetch(`/api/users/teachers/search?keyword=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayTeachers(data.data);
+                    } else {
+                        document.getElementById('teachers-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索教师失败:', error);
+                    loadTeachers(); // 回退到加载全部教师
+                });
+        }
+        
+        // 添加教师
+        function addTeacher() {
+            const username = document.getElementById('teacher-username').value;
+            const password = document.getElementById('teacher-password').value;
+            const realname = document.getElementById('teacher-realname').value;
+            const resultElement = document.getElementById('teacher-result');
+            
+            if (!username || !password || !realname) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有字段</p>';
+                return;
+            }
+            
+            const userData = {
+                username: username,
+                password: password,
+                realName: realname,
+                role: 2 // 教师权限
+            };
+            
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">教师添加成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('teacher-username').value = '';
+                    document.getElementById('teacher-password').value = '';
+                    document.getElementById('teacher-realname').value = '';
+                    
+                    // 重新加载教师列表
+                    loadTeachers();
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">添加失败: ' + data.msg + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('添加教师失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">添加教师失败，请稍后重试</p>';
+            });
+        }
+        
+        // 加载消息数据
+        function loadMessages() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                document.getElementById('messages-list').innerHTML = '<p>请先登录</p>';
+                return;
+            }
+            
+            fetch(`/api/messages/user/${currentUser.id}?page=0&size=20`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayMessages(data.data);
+                    } else {
+                        document.getElementById('messages-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取消息失败:', error);
+                    document.getElementById('messages-list').innerHTML = '<p>加载消息失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示消息列表
+        function displayMessages(messages) {
+            const messagesList = document.getElementById('messages-list');
+            
+            if (!messages || messages.length === 0) {
+                messagesList.innerHTML = '<p>暂无消息</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">标题</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">发送者</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">状态</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            messages.forEach(message => {
+                const statusText = message.status === 1 ? '已读' : '未读';
+                const statusClass = message.status === 1 ? '#d4edda' : '#fff3cd';
+                const statusColor = message.status === 1 ? '#28a745' : '#856404';
+                
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${message.title || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${message.sender || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${message.createTime ? new Date(message.createTime).toLocaleString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;"><span style="background-color: ${statusClass}; color: ${statusColor}; padding: 4px 8px; border-radius: 4px;">${statusText}</span></td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="viewMessageDetail(${message.id})">查看详情</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            messagesList.innerHTML = tableHtml;
+        }
+        
+        // 搜索消息
+        function searchMessages() {
+            const searchTerm = document.getElementById('message-search').value.toLowerCase();
+            
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                document.getElementById('messages-list').innerHTML = '<p>请先登录</p>';
+                return;
+            }
+            
+            fetch(`/api/messages/user/${currentUser.id}/search?keyword=${encodeURIComponent(searchTerm)}&page=0&size=20`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayMessages(data.data);
+                    } else {
+                        document.getElementById('messages-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索消息失败:', error);
+                    loadMessages(); // 回退到加载全部消息
+                });
+        }
+        
+        // 发送消息
+        function sendMessage() {
+            const messageType = document.getElementById('message-type').value;
+            const recipientId = document.getElementById('recipient-user').value;
+            const title = document.getElementById('message-title').value;
+            const content = document.getElementById('message-content').value;
+            const resultElement = document.getElementById('send-message-result');
+            
+            if (!title || !content) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写标题和内容</p>';
+                return;
+            }
+            
+            // 验证特定条件
+            if (messageType === 'specific' && !recipientId) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请选择接收者</p>';
+                return;
+            }
+            
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const messageData = {
+                title: title,
+                content: content,
+                sender: currentUser.realName || currentUser.username
+            };
+            
+            // 根据消息类型设置不同的参数
+            if (messageType === 'specific') {
+                messageData.userId = parseInt(recipientId);
+            } else {
+                messageData.type = messageType;
+            }
+            
+            fetch('/api/messages/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">消息发送成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('message-type').value = 'specific';
+                    document.getElementById('recipient-user').value = '';
+                    document.getElementById('message-title').value = '';
+                    document.getElementById('message-content').value = '';
+                    toggleRecipientField(); // 重置接收者字段显示
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">发送失败: ' + data.msg + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('发送消息失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">发送消息失败，请稍后重试</p>';
+            });
+        }
+        
+        // 查看消息详情
+        function viewMessageDetail(messageId) {
+            // 跳转到消息详情页面
+            window.location.href = `message-detail.html?id=${messageId}`;
+        }
+        
+        // 修改密码功能
+        function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const resultElement = document.getElementById('password-result');
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有密码字段</p>';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">新密码和确认密码不一致</p>';
+                return;
+            }
+            
+            // 这里应该是调用后端API修改密码
+            resultElement.innerHTML = '<p style="color: green;">密码修改成功</p>';
+            
+            // 清空输入框
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+        
+        // 删除用户
+        function deleteUser(userId, username, userType) {
+            let typeName = '';
+            if (userType === 'student') {
+                typeName = '学生';
+            } else if (userType === 'teacher') {
+                typeName = '教师';
+            } else if (userType === 'admin') {
+                typeName = '管理员';
+            } else {
+                typeName = '用户';
+            }
+            
+            if (confirm(`确定要删除这个${typeName}吗？`)) {
+                apiRequest(`/api/users/${userId}`, {
+                    method: 'DELETE'
+                })
+                .then(data => {
+                    if (data.code === 200) {
+                        alert(`${typeName}删除成功！`);
+                        // 根据用户类型重新加载相应的列表
+                        if (userType === 'student') {
+                            loadStudents();
+                        } else if (userType === 'teacher') {
+                            loadTeachers();
+                        } else if (userType === 'admin') {
+                            loadAdmins();
+                        }
+                    } else {
+                        alert(`${typeName}删除失败: ` + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error(`删除${typeName}失败:`, error);
+                    alert(`${typeName}删除失败，请稍后重试`);
+                });
+            }
+        }
+        
+        // 重置教师密码
+        function resetTeacherPassword(teacherId) {
+            if (confirm("确定要重置这位教师的密码吗？")) {
+                fetch(`/api/users/${teacherId}/reset-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: '123456' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("密码重置成功！");
+                    } else {
+                        alert("密码重置失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert("密码重置失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 重置学生密码
+        function resetStudentPassword(studentId) {
+            if (confirm("确定要重置这位学生的密码吗？")) {
+                fetch(`/api/users/${studentId}/reset-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: '123456' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("密码重置成功！");
+                    } else {
+                        alert("密码重置失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert("密码重置失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 添加管理员
+        function addAdmin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const realname = document.getElementById('admin-realname').value;
+            const resultElement = document.getElementById('admin-result');
+            
+            if (!username || !password || !realname) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有字段</p>';
+                return;
+            }
+            
+            const userData = {
+                username: username,
+                password: password,
+                realName: realname,
+                role: 1 // 管理员权限
+            };
+            
+            // 使用apiRequest函数确保包含正确的请求头
+            apiRequest('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">管理员添加成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('admin-username').value = '';
+                    document.getElementById('admin-password').value = '';
+                    document.getElementById('admin-realname').value = '';
+                    
+                    // 重新加载管理员列表
+                    loadAdmins();
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">添加失败: ' + data.msg + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('添加管理员失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">添加失败，请稍后重试</p>';
+            });
+        }
+        
+        // API请求函数，确保请求头包含用户信息
+        function apiRequest(url, options = {}) {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            // 设置默认请求头
+            const defaultHeaders = {
+                'Content-Type': 'application/json'
+            };
+            
+            // 添加用户认证信息
+            if (currentUser) {
+                defaultHeaders['X-User-Id'] = currentUser.id;
+                defaultHeaders['X-User-Role'] = currentUser.role;
+            }
+            
+            // 合并传入的选项
+            const requestOptions = {
+                ...options,
+                headers: {
+                    ...defaultHeaders,
+                    ...(options.headers || {})
+                }
+            };
+            
+            // 执行请求
+            return fetch(url, requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                });
+        }
+    </script>
+</body>
+</html>
+            })
+            .catch(error => {
+                console.error('添加管理员失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">添加管理员失败，请稍后重试</p>';
+            });
+        }
+        
+        // 删除学生 - 现在使用统一的删除用户函数
+        function deleteStudent(studentId) {
+            deleteUser(studentId, '', 'student');
+        }
+        
+        // 加载教师数据
+        function loadTeachers() {
+            fetch('/api/users/teachers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayTeachers(data.data);
+                    } else {
+                        document.getElementById('teachers-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取教师数据失败:', error);
+                    document.getElementById('teachers-list').innerHTML = '<p>加载教师数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示教师列表
+        async function displayTeachers(teachers) {
+            const teachersList = document.getElementById('teachers-list');
+            
+            if (!teachers || teachers.length === 0) {
+                teachersList.innerHTML = '<p>暂无教师数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">任课数量</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (const teacher of teachers) {
+                const coursesCount = await fetch(`/api/courses/teacher/${teacher.id}/count`).then(response => response.json()).then(data => data.data || 0);
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${teacher.username}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${teacher.realName}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${new Date(teacher.createdAt).toLocaleString()}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${coursesCount}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">
+                            <button onclick="resetTeacherPassword(${teacher.id})">重置密码</button>
+                            <button onclick="deleteUser(${teacher.id}, '', 'teacher')">删除</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            teachersList.innerHTML = tableHtml;
+        }
+        
+        // 加载学生数据
+        function loadStudents() {
+            fetch('/api/users/students')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayStudents(data.data);
+                    } else {
+                        document.getElementById('students-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取学生数据失败:', error);
+                    document.getElementById('students-list').innerHTML = '<p>加载学生数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示学生列表
+        function displayStudents(students) {
+            const studentsList = document.getElementById('students-list');
+            
+            if (!students || students.length === 0) {
+                studentsList.innerHTML = '<p>暂无学生数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (const student of students) {
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${student.username}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${student.realName}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${new Date(student.createdAt).toLocaleString()}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">
+                            <button onclick="resetStudentPassword(${student.id})">重置密码</button>
+                            <button onclick="deleteUser(${student.id}, '', 'student')">删除</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            studentsList.innerHTML = tableHtml;
+        }
+        
+        // 加载管理员数据
+        function loadAdmins() {
+            fetch('/api/users/admins')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayAdmins(data.data);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取管理员数据失败:', error);
+                    document.getElementById('admins-list').innerHTML = '<p>加载管理员数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示管理员列表
+        function displayAdmins(admins) {
+            const adminsList = document.getElementById('admins-list');
+            
+            if (!admins || admins.length === 0) {
+                adminsList.innerHTML = '<p>暂无管理员数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (const admin of admins) {
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${admin.username}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${admin.realName}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">${new Date(admin.createdAt).toLocaleString()}</td>
+                        <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">
+                            <button onclick="resetAdminPassword(${admin.id})">重置密码</button>
+                            <button onclick="deleteUser(${admin.id}, '', 'admin')">删除</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            adminsList.innerHTML = tableHtml;
+        }
+        
+        // 搜索管理员
+        function searchAdmins() {
+            const searchTerm = document.getElementById('admin-search').value.toLowerCase();
+            
+            fetch(`/api/users/admins/search?keyword=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayAdmins(data.data);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索管理员失败:', error);
+                    loadAdmins(); // 回退到加载全部管理员
+                });
+        }
+        
+        // 重置管理员密码
+        function resetAdminPassword(adminId) {
+            if (confirm("确定要重置这位管理员的密码吗？")) {
+                fetch(`/api/users/${adminId}/reset-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: '123456' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("密码重置成功！");
+                    } else {
+                        alert("密码重置失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert("密码重置失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 加载管理员数据
+        function loadAdmins() {
+            apiRequest('/api/users')
+                .then(data => {
+                    if (data.code === 200) {
+                        // 过滤出角色为1的管理员
+                        const admins = data.data.filter(user => user.role === 1);
+                        displayAdmins(admins);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取管理员数据失败:', error);
+                    document.getElementById('admins-list').innerHTML = '<p>加载管理员数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 搜索管理员
+        function searchAdmins() {
+            const searchTerm = document.getElementById('admin-search').value.toLowerCase();
+            
+            apiRequest('/api/users')
+                .then(data => {
+                    if (data.code === 200) {
+                        // 过滤出角色为1的管理员，并匹配搜索关键词
+                        const filteredAdmins = data.data.filter(user => 
+                            user.role === 1 && 
+                            (user.username.toLowerCase().includes(searchTerm) || 
+                             user.realName.toLowerCase().includes(searchTerm))
+                        );
+                        displayAdmins(filteredAdmins);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索管理员失败:', error);
+                    loadAdmins(); // 回退到加载全部管理员
+                });
+        }
+        
+        // 显示管理员列表
+        async function displayAdmins(admins) {
+            const adminsList = document.getElementById('admins-list');
+            
+            if (!admins || admins.length === 0) {
+                adminsList.innerHTML = '<p>暂无管理员数据</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">用户名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">真实姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">注册时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // 生成所有行的HTML
+            admins.forEach(admin => {
+                tableHtml += `
+                    <tr data-admin-id="${admin.id}">
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${admin.username || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${admin.realName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${admin.createTime ? new Date(admin.createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="deleteUser(${admin.id}, '${admin.username}', 'admin')">删除</button>
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="resetAdminPassword(${admin.id})">重置密码</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            adminsList.innerHTML = tableHtml;
+        }
+        
+        // 搜索管理员
+        function searchAdmins() {
+            const searchTerm = document.getElementById('admin-search').value.toLowerCase();
+            
+            fetch('/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // 过滤出角色为1的管理员，并匹配搜索关键词
+                        const filteredAdmins = data.data.filter(user => 
+                            user.role === 1 && 
+                            (user.username.toLowerCase().includes(searchTerm) || 
+                             user.realName.toLowerCase().includes(searchTerm))
+                        );
+                        displayAdmins(filteredAdmins);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索管理员失败:', error);
+                    loadAdmins(); // 回退到加载全部管理员
+                });
+        }
+        
+        // 重置管理员密码
+        function resetAdminPassword(adminId) {
+            if (confirm('确定要重置该管理员的密码吗？')) {
+                fetch(`/api/users/${adminId}/reset-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert('密码重置成功');
+                    } else {
+                        alert(`密码重置失败: ${data.msg}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert('重置密码失败，请稍后重试');
+                });
+            }
+        }
+        
+        // 删除用户
+        function deleteUser(userId, username, userType) {
+            if (confirm(`确定要删除用户 ${username} 吗？`)) {
+                fetch(`/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert('用户删除成功');
+                        loadAdmins();
+                    } else {
+                        alert(`用户删除失败: ${data.msg}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('删除用户失败:', error);
+                    alert('删除用户失败，请稍后重试');
+                });
+            }
+        }
+        
+        // 初始化页面
+        function init() {
+            loadAdmins();
+            document.getElementById('admin-search').addEventListener('input', searchAdmins);
+        }
+                        );
+                        displayAdmins(filteredAdmins);
+                    } else {
+                        document.getElementById('admins-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索管理员失败:', error);
+                    loadAdmins(); // 回退到加载全部管理员
+                });
+        }
+        
+        // 重置管理员密码
+        function resetAdminPassword(adminId) {
+            if (confirm("确定要重置这位管理员的密码吗？")) {
+                fetch(`/api/users/${adminId}/reset-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: '123456' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("密码重置成功！");
+                    } else {
+                        alert("密码重置失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert("密码重置失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 加载系统统计信息
+        function loadSystemStats() {
+            Promise.all([
+                fetch('/api/users/students/count').then(response => response.json()),
+                fetch('/api/users/teachers/count').then(response => response.json()),
+                fetch('/api/courses/count').then(response => response.json()),
+                fetch('/api/users/admins/count').then(response => response.json())
+            ])
+            .then(([studentsData, teachersData, coursesData, adminsData]) => {
+                document.getElementById('total-students').textContent = studentsData.code === 200 ? studentsData.data || 0 : 0;
+                document.getElementById('total-teachers').textContent = teachersData.code === 200 ? teachersData.data || 0 : 0;
+                document.getElementById('total-courses').textContent = coursesData.code === 200 ? coursesData.data || 0 : 0;
+                document.getElementById('total-admins').textContent = adminsData.code === 200 ? adminsData.data || 0 : 0;
+                
+                // 设置最后更新时间
+                document.getElementById('last-update').textContent = new Date().toLocaleString();
+            })
+            .catch(error => {
+                console.error('加载系统统计信息失败:', error);
+                // 出错时仍显示默认值0
+                document.getElementById('total-students').textContent = '0';
+                document.getElementById('total-teachers').textContent = '0';
+                document.getElementById('total-courses').textContent = '0';
+                document.getElementById('total-admins').textContent = '0';
+            });
+        }
+        
+        // 删除用户
+        function deleteUser(userId, courseId, userType) {
+            if (confirm("确定要删除这位用户吗？")) {
+                fetch(`/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("用户删除成功！");
+                        if (userType === 'teacher') {
+                            loadTeachers();
+                        } else if (userType === 'student') {
+                            loadStudents();
+                        } else if (userType === 'admin') {
+                            loadAdmins();
+                        }
+                    } else {
+                        alert("用户删除失败: " + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('删除用户失败:', error);
+                    alert("用户删除失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 初始化页面
+        function init() {
+            loadSystemStats();
+            loadTeachers();
+            loadStudents();
+            loadAdmins();
+        }
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // 先生成所有行的基础HTML
+            teachers.forEach(teacher => {
+                tableHtml += `
+                    <tr data-teacher-id="${teacher.id}">
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.username || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.realName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${teacher.createTime ? new Date(teacher.createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">加载中...</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="deleteUser(${teacher.id}, '${teacher.username}', 'teacher')">删除</button>
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 14px;" onclick="resetTeacherPassword(${teacher.id})">重置密码</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            teachersList.innerHTML = tableHtml;
+            
+            // 然后异步更新每行的任课数量
+            for (const teacher of teachers) {
+                try {
+                    const response = await fetch(`/api/users/${teacher.id}/course-count`);
+                    const countData = await response.json();
+                    const courseCount = countData.code === 200 ? (countData.data || 0) : 0;
+                    
+                    // 更新对应行的任课数量
+                    const row = document.querySelector(`tr[data-teacher-id="${teacher.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `${courseCount}门`;
+                    }
+                } catch (error) {
+                    console.error('获取教师任课数量失败:', error);
+                    
+                    // 更新对应行的任课数量为0
+                    const row = document.querySelector(`tr[data-teacher-id="${teacher.id}"]`);
+                    if (row) {
+                        const cells = row.cells;
+                        cells[3].textContent = `0门`;
+                    }
+                }
+            }
+        }
+        
+        // 搜索教师
+        function searchTeachers() {
+            const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
+            
+            fetch(`/api/users/teachers/search?keyword=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displayTeachers(data.data);
+                    } else {
+                        document.getElementById('teachers-list').innerHTML = `<p>搜索失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('搜索教师失败:', error);
+                    loadTeachers(); // 回退到加载全部教师
+                });
+        }
+    </script>
+</body>
+</html>

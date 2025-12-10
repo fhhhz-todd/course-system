@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程学生列表 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e5f2;
+        }
+        
+        th {
+            background-color: #f4f7fe;
+        }
+        
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-select:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-outline:hover {
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-chalkboard-teacher"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title" id="course-title">课程学生列表</h1>
+            <div class="user-info">
+                <span id="welcome-message"></span>
+                <div class="avatar" id="user-avatar">T</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            
+            <h2>选课学生列表</h2>
+            <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                <input type="file" id="excel-file" accept=".xlsx,.xls" style="display: none;" onchange="handleFileSelect(event)">
+                <button class="btn-select" onclick="document.getElementById('excel-file').click()" style="background:var(--primary-color); color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">
+                    <i class="fas fa-file-excel"></i> 批量导入（Excel）
+                </button>
+                <button class="btn-danger" onclick="batchDeleteStudents()" style="background:#ff5b5b; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">
+                    <i class="fas fa-trash"></i> 批量删除
+                </button>
+            </div>
+            <div id="import-result" style="margin-bottom: 15px;"></div>
+            <div id="students-list">
+                <p>加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                // 如果没有登录信息，跳转到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 检查是否传递了课程ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('courseId');
+            const courseName = urlParams.get('courseName');
+            
+            if (!courseId) {
+                document.getElementById('students-list').innerHTML = '<p>缺少课程信息</p>';
+                return;
+            }
+            
+            // 更新页面标题
+            document.getElementById('course-title').textContent = `${courseName || '课程'} - 学生列表`;
+            
+            // 显示用户信息
+            updateUserInfoDisplay();
+            
+            // 加载学生数据
+            loadStudents(courseId);
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示欢迎信息
+                document.getElementById('welcome-message').textContent = '欢迎你，' + currentUser.realName + '！';
+                
+                // 显示头像
+                updateAvatarDisplay('user-avatar', currentUser);
+            }
+        }
+        
+        // 更新头像显示的通用函数
+        function updateAvatarDisplay(elementId, user) {
+            const element = document.getElementById(elementId);
+            if (user.avatar) {
+                element.innerHTML = `<img src="${user.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                element.textContent = user.realName.charAt(0);
+            }
+        }
+        
+        // 加载学生数据
+        function loadStudents(courseId) {
+            // 显示加载状态
+            document.getElementById('students-list').innerHTML = '<p>加载中...</p>';
+            
+            // 从后端获取选课学生数据
+            fetch(`/api/student-courses/course/${courseId}/students`)
+                .then(response => response.json())
+                .then(data => {
+                    const studentsList = document.getElementById('students-list');
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        // 生成学生表格
+                        let tableHtml = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="padding:12px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                                        <th>学生ID</th>
+                                        <th>用户名</th>
+                                        <th>真实姓名</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        
+                        data.data.forEach(student => {
+                            // 根据API返回的数据结构，使用正确的字段名
+                            const studentId = student.id || '';
+                            const studentUsername = student.username || '';
+                            const studentRealName = student.realName || student.real_name || '';
+                            
+                            tableHtml += `
+                                <tr>
+                                    <td style="padding:12px;border-bottom:1px solid #e0e5f2;"><input type="checkbox" class="student-checkbox" data-id="${studentId}"></td>
+                                    <td>${studentId}</td>
+                                    <td>${studentUsername}</td>
+                                    <td>${studentRealName}</td>
+                                    <td>
+                                        <button class="btn-outline" onclick="resetStudentPassword('${studentId}')" style="margin-right: 8px;">
+                                            <i class="fas fa-key"></i> 重置密码
+                                        </button>
+                                        <button class="btn-danger" onclick="kickStudent('${studentId}', ${courseId})">
+                                            <i class="fas fa-user-times"></i> 踢出课程
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        
+                        tableHtml += `
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        studentsList.innerHTML = tableHtml;
+                    } else if (data.code === 200 && (!data.data || data.data.length === 0)) {
+                        studentsList.innerHTML = '<p>暂无学生选课</p>';
+                    } else {
+                        studentsList.innerHTML = `<p>加载失败: ${data.msg || '未知错误'}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取学生数据失败:', error);
+                    document.getElementById('students-list').innerHTML = '<p>加载学生数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (!selectAllCheckbox) return;
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+        
+        // 批量删除学生
+        function batchDeleteStudents() {
+            const selectedCheckboxes = document.querySelectorAll('.student-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('请至少选择一个学生');
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('courseId');
+            
+            if (!courseId) {
+                alert('缺少课程信息');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${selectedCheckboxes.length} 个学生吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            // 获取选中的学生ID
+            const studentIds = Array.from(selectedCheckboxes).map(checkbox => 
+                checkbox.getAttribute('data-id')
+            );
+            
+            // 发送批量删除请求
+            fetch(`/api/student-courses/batch/${courseId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentIds)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    alert(`成功删除 ${studentIds.length} 个学生！`);
+                    // 重新加载学生列表
+                    loadStudents(courseId);
+                } else {
+                    alert(`删除失败: ${data.msg || '未知错误'}`);
+                }
+            })
+            .catch(error => {
+                console.error('批量删除学生失败:', error);
+                alert('批量删除失败，请稍后重试');
+            });
+        }
+        
+        // 重置学生密码
+        function resetStudentPassword(studentId) {
+            if (confirm("确定要将该学生的密码重置为 123456 吗？")) {
+                fetch(`/api/users/${studentId}/reset-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("密码重置成功！默认密码为 123456");
+                    } else {
+                        alert(`密码重置失败: ${data.msg || '未知错误'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置密码失败:', error);
+                    alert("重置密码失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 踢出学生
+        function kickStudent(studentId, courseId) {
+            if (confirm("确定要将该学生踢出课程吗？")) {
+                // 发送请求到后端删除学生选课记录
+                fetch(`/api/student-courses/course/${courseId}/student/${studentId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("学生已成功踢出课程！");
+                        
+                        // 踢出学生后，给被踢出的学生发送退课通知，遵循系统通知文案规范
+                        setTimeout(() => {
+                            // 获取课程名称并发送标准的退课通知
+                            fetch(`/api/courses/${courseId}`)
+                                .then(response => response.json())
+                                .then(courseData => {
+                                    let courseName = '未知课程';
+                                    if (courseData.code === 200 && courseData.data) {
+                                        courseName = courseData.data.courseName || '未知课程';
+                                    }
+                                    
+                                    sendSystemMessage('退课通知', `你已退选${courseName}课程！`, '系统', studentId);
+                                })
+                                .catch(error => {
+                                    console.error('获取课程信息失败:', error);
+                                    // 如果获取课程名称失败，使用默认消息
+                                    sendSystemMessage('退课通知', `你已退选课程！`, '系统', studentId);
+                                });
+                        }, 0);
+                        
+                        // 重新加载学生列表
+                        loadStudents(courseId);
+                    } else {
+                        alert(`操作失败: ${data.msg || '未知错误'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('踢出学生失败:', error);
+                    alert("操作失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 返回上一个页面
+        function goBack() {
+            // students.html 的上一层是课程列表（#courses），根据角色返回
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (currentUser.role == 2) {
+                // 教师从课程列表进入，返回到课程列表
+                window.location.href = 'teacher.html#courses';
+            } else if (currentUser.role == 1) {
+                // 管理员，返回到课程列表或主页
+                window.location.href = 'admin.html#courses';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+        
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('courseId');
+            
+            if (!courseId) {
+                alert('缺少课程信息');
+                return;
+            }
+            
+            if (!confirm(`确定要将Excel文件中的学生导入到该课程吗？`)) {
+                event.target.value = '';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const resultElement = document.getElementById('import-result');
+            resultElement.innerHTML = '<p style="color: #5c4cf4;">正在导入...</p>';
+            
+            fetch(`/api/student-courses/import/${courseId}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = `<p style="color: #28a745;">${data.data}</p>`;
+                    // 重新加载学生列表
+                    loadStudents(courseId);
+                    // 3秒后清除提示
+                    setTimeout(() => {
+                        resultElement.innerHTML = '';
+                    }, 3000);
+                } else {
+                    resultElement.innerHTML = `<p style="color: #ff5b5b;">导入失败: ${data.msg || '未知错误'}</p>`;
+                }
+                // 清空文件选择
+                event.target.value = '';
+            })
+            .catch(error => {
+                console.error('批量导入失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">批量导入失败，请稍后重试</p>';
+                event.target.value = '';
+            });
+        }
+        
+        // 发送系统消息
+        function sendSystemMessage(title, content, sender, userId) {
+            // 如果没有指定接收者ID，则使用当前用户
+            if (!userId) {
+                const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+                if (!currentUser) {
+                    console.error('用户未登录，无法发送消息');
+                    return;
+                }
+                userId = currentUser.id;
+            }
+            
+            // 准备消息数据
+            const messageData = {
+                title: title,
+                content: content,
+                sender: sender || '系统',
+                userId: userId
+            };
+            
+            // 发送请求到后端创建消息
+            fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code !== 200) {
+                    console.error('发送消息失败:', data.msg || '未知错误');
+                }
+            })
+            .catch(error => {
+                console.error('发送消息请求失败:', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TQMS - 作业提交</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4; /* 图片中的主紫色 */
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- 侧边栏 --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* --- 主内容区 --- */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- 卡片容器 --- */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        /* --- 搜索栏 --- */
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #e0e5f2;
+            border-radius: 30px;
+            background: #f4f7fe;
+            outline: none;
+        }
+
+        /* --- 表格样式 --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-transform: uppercase;
+            padding: 15px;
+            border-bottom: 1px solid #e0e5f2;
+        }
+
+        td {
+            padding: 18px 15px;
+            font-size: 15px;
+            border-bottom: 1px solid #f4f7fe;
+        }
+
+        /* --- 按钮 --- */
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .btn-select:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 状态进度条 (仿图) */
+        .capacity-bar {
+            width: 100px;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .capacity-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* 底部退出 */
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* 导航链接 */
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f4f7fe;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #e0e5f2;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shield-halved"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i> 首页
+        </button>
+        <button class="menu-item" onclick="window.location.href='courses.html'">
+            <i class="fas fa-book-open"></i> 课程管理
+        </button>
+        <button class="menu-item" onclick="window.location.href='assignments.html'">
+            <i class="fas fa-file-alt"></i> 作业管理
+        </button>
+        <button class="menu-item" onclick="window.location.href='students.html'">
+            <i class="fas fa-graduation-cap"></i> 学生管理
+        </button>
+        <button class="menu-item active">
+            <i class="fas fa-upload"></i> 作业提交
+        </button>
+        
+        <button class="menu-item logout-btn">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">作业提交</h1>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span>管理员</span>
+                <div style="width:40px; height:40px; border-radius:50%; background:#e0e5f2;"></div>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="courses.html" class="nav-link">课程管理</a>
+            <a href="assignments.html" class="nav-link">作业管理</a>
+            <a href="students.html" class="nav-link">学生管理</a>
+            <a href="submissions.html" class="nav-link">作业提交</a>
+        </div>
+
+        <div id="submissions-list">
+            <div class="search-box">
+                <input type="text" placeholder="搜索作业提交..." id="search-input">
+                <button class="btn-select" onclick="searchSubmissions()">搜索</button>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>作业提交记录</h2>
+                </div>
+                
+                <div id="submissions-result">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>学生ID</th>
+                                <th>作业ID</th>
+                                <th>提交内容</th>
+                                <th>提交时间</th>
+                                <th>状态</th>
+                                <th>评语</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submission-table-body">
+                            <tr>
+                                <td colspan="8" style="text-align:center;">点击"刷新列表"加载提交数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn-outline" onclick="loadSubmissions()">刷新列表</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="review-submission-form" class="card" style="display:none;">
+            <h2>批阅作业</h2>
+            <div class="form-group">
+                <label>评语</label>
+                <textarea id="review-comment" placeholder="请输入评语" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <select id="review-status">
+                    <option value="1">待批阅</option>
+                    <option value="2">已通过</option>
+                    <option value="3">未通过</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-select" onclick="reviewSubmission()">提交评阅</button>
+                <button class="btn-outline" onclick="cancelReview()">取消</button>
+            </div>
+            <div id="review-result" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 当前正在批阅的提交ID
+        let currentSubmissionId = null;
+
+        // 显示批阅表单
+        function showReviewForm(submissionId) {
+            currentSubmissionId = submissionId;
+            document.getElementById('review-submission-form').style.display = 'block';
+            document.getElementById('submissions-list').style.display = 'none';
+        }
+
+        // 取消批阅
+        function cancelReview() {
+            document.getElementById('review-submission-form').style.display = 'none';
+            document.getElementById('submissions-list').style.display = 'block';
+        }
+        
+        // 批阅作业
+        function reviewSubmission() {
+            const comment = document.getElementById('review-comment').value;
+            const status = document.getElementById('review-status').value;
+            
+            const requestData = {
+                comment: comment,
+                status: parseInt(status)
+            };
+            
+            fetch(`/api/submissions/${currentSubmissionId}/review`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('review-result').innerText = JSON.stringify(data, null, 2);
+                // 重新加载提交列表
+                loadSubmissions();
+                // 切换回列表视图
+                setTimeout(() => {
+                    cancelReview();
+                }, 1000);
+            })
+            .catch(error => {
+                document.getElementById('review-result').innerText = '错误: ' + error;
+            });
+        }
+
+        // 加载所有提交记录
+        function loadSubmissions() {
+            fetch('/api/submissions')
+            .then(response => response.json())
+            .then(data => {
+                displaySubmissions(data.data || data);
+            })
+            .catch(error => {
+                document.getElementById('submissions-result').innerHTML = '<p>错误: ' + error + '</p>';
+            });
+        }
+        
+        // 搜索提交记录
+        function searchSubmissions() {
+            const keyword = document.getElementById('search-input').value;
+            if (!keyword) {
+                loadSubmissions();
+                return;
+            }
+            
+            // 在前端过滤提交数据
+            fetch('/api/submissions')
+            .then(response => response.json())
+            .then(allData => {
+                const filteredData = (allData.data || allData).filter(submission => 
+                    (submission.comment && submission.comment.includes(keyword)) ||
+                    submission.studentId.toString().includes(keyword) ||
+                    submission.assignmentId.toString().includes(keyword)
+                );
+                displaySubmissions(filteredData);
+            })
+            .catch(error => {
+                document.getElementById('submissions-result').innerHTML = '<p>错误: ' + error + '</p>';
+            });
+        }
+
+        // 显示提交列表
+        function displaySubmissions(submissions) {
+            const tbody = document.getElementById('submission-table-body');
+            if (!submissions || submissions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">暂无提交数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            submissions.forEach(submission => {
+                // 状态转换
+                let statusText = '未知';
+                let statusClass = '';
+                switch(submission.status) {
+                    case 1:
+                        statusText = '待批阅';
+                        statusClass = 'status-pending';
+                        break;
+                    case 2:
+                        statusText = '已通过';
+                        statusClass = 'status-approved';
+                        break;
+                    case 3:
+                        statusText = '未通过';
+                        statusClass = 'status-rejected';
+                        break;
+                }
+                
+                html += `
+                    <tr>
+                        <td>${submission.id || ''}</td>
+                        <td>${submission.studentId || ''}</td>
+                        <td>${submission.assignmentId || ''}</td>
+                        <td>${submission.content || ''}</td>
+                        <td>${submission.submitTime || ''}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${submission.comment || ''}</td>
+                        <td>
+                            <button class="btn-select" onclick="showReviewForm(${submission.id})">批阅</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // 页面加载时自动获取一次
+        window.onload = loadSubmissions;
+    </script>
+</body>
+</html>

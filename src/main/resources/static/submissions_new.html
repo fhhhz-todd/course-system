@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业提交 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        /* 按钮样式 */
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-select:hover {
+            background-color: #4a3ce0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-danger:hover {
+            background-color: #ff3b3b;
+        }
+        
+        /* 文件上传样式 */
+        .file-upload {
+            border: 2px dashed #e0e5f2;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            background: #f4f7fe;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: #edf2ff;
+        }
+        
+        .file-upload i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .file-list {
+            margin-top: 15px;
+            text-align: left;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f4f7fe;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .file-item button {
+            background: #ff5b5b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        
+        .file-item button:hover {
+            background: #ff3b3b;
+        }
+        
+        /* 提交结果样式 */
+        .submission-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* 预览样式 */
+        .preview-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-user-graduate"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+        <button class="menu-item logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">作业提交</h1>
+            <div class="user-info">
+                <span id="user-role">学生</span>
+                <div class="avatar" id="user-avatar">S</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 id="assignment-title">作业标题</h2>
+            <p id="assignment-course">课程名称</p>
+            
+            <form id="submission-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="submission-content">提交内容</label>
+                    <textarea id="submission-content" placeholder="请输入作业内容..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>文件上传</label>
+                    <div class="file-upload" onclick="document.getElementById('file-input').click();">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>点击上传文件（支持图片、Word文档、PDF等）</p>
+                        <p style="font-size: 12px; color: #a3aed0;">支持格式：JPG, PNG, GIF, DOC, DOCX, PDF, TXT 等</p>
+                    </div>
+                    <input type="file" id="file-input" style="display: none;" multiple onchange="handleFileSelect(event)">
+                    
+                    <div id="file-list" class="file-list"></div>
+                </div>
+                
+                <div id="preview-container" class="preview-container"></div>
+                
+                <button type="button" class="btn-select" id="submit-btn" onclick="submitAssignment()">提交作业</button>
+                <button type="button" class="btn-outline" onclick="window.location.href='student.html#assignments'">返回我的作业</button>
+            </form>
+            
+            <div id="submission-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            loadAssignmentInfo();
+            checkExistingSubmission(); // 检查是否已有提交记录
+        });
+        
+        // 检查是否已有提交记录
+        function checkExistingSubmission() {
+            const assignmentId = sessionStorage.getItem('currentAssignmentId');
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!assignmentId || !currentUser) {
+                return;
+            }
+            
+            // 检查是否已有提交记录
+            fetch(`/api/submissions/assignment/${assignmentId}/student/${currentUser.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        // 已有提交记录，显示修改界面
+                        showModifyInterface(data.data);
+                    } else {
+                        // 没有提交记录，保持提交界面
+                        document.getElementById('submit-btn').textContent = '提交作业';
+                    }
+                })
+                .catch(error => {
+                    console.error('检查提交记录失败:', error);
+                    // 出错时默认保持提交界面
+                    document.getElementById('submit-btn').textContent = '提交作业';
+                });
+        }
+        
+        // 显示修改界面
+        function showModifyInterface(submissionData) {
+            document.getElementById('submit-btn').textContent = '修改作业';
+            document.getElementById('submit-btn').onclick = function() {
+                modifyAssignment(submissionData.id); // 传递提交记录ID用于修改
+            };
+            
+            // 如果有之前的内容，填充到表单中
+            if (submissionData.content) {
+                document.getElementById('submission-content').value = submissionData.content;
+            }
+            
+            // 如果有附件，显示附件信息（但不自动下载，因为这可能涉及安全问题）
+            if (submissionData.attachmentPath) {
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML += `<div class="file-item"><span>已有附件，重新上传将覆盖</span></div>`;
+            }
+        }
+        
+        // 修改作业
+        function modifyAssignment(submissionId) {
+            const assignmentId = sessionStorage.getItem('currentAssignmentId');
+            const content = document.getElementById('submission-content').value;
+            const resultElement = document.getElementById('submission-result');
+            
+            if (!assignmentId) {
+                resultElement.innerHTML = '<div class="submission-result error">无法获取作业信息</div>';
+                return;
+            }
+            
+            if (!content && selectedFiles.length === 0) {
+                resultElement.innerHTML = '<div class="submission-result error">请填写作业内容或上传文件</div>';
+                return;
+            }
+            
+            // 获取当前用户信息
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                resultElement.innerHTML = '<div class="submission-result error">请先登录</div>';
+                return;
+            }
+            
+            // 显示修改中状态
+            resultElement.innerHTML = '<div class="submission-result" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;">修改中...</div>';
+            
+            // 创建FormData对象以支持文件上传
+            const formData = new FormData();
+            formData.append('assignmentId', assignmentId);
+            formData.append('studentId', currentUser.id);  // 添加学生ID
+            formData.append('content', content);
+            
+            // 添加选中的文件
+            selectedFiles.forEach((file, index) => {
+                formData.append('files', file);
+            });
+            
+            // 发送修改请求 - 注意：由于后端没有提供修改提交的API，我们重新提交
+            // 实际上会创建一个新的提交记录，因为提交作业的API会创建新记录
+            fetch('/api/submissions', {
+                method: 'POST', // 保持POST方法，因为后端API是用于提交的
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<div class="submission-result success">作业修改成功！</div>';
+                    
+                    // 清空表单和文件
+                    document.getElementById('submission-content').value = '';
+                    selectedFiles = [];
+                    updateFileList();
+                    document.getElementById('preview-container').innerHTML = '';
+                    
+                    // 更新学生作业列表中的状态
+                    setTimeout(() => {
+                        // 跳转到作业详情页面
+                        window.location.href = 'submission-view.html';
+                    }, 1000);
+                } else {
+                    resultElement.innerHTML = `<div class="submission-result error">修改失败: ${data.msg}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('修改失败:', error);
+                resultElement.innerHTML = '<div class="submission-result error">修改失败，请稍后重试</div>';
+            });
+        }
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示用户信息
+                document.getElementById('user-role').textContent = '学生: ' + currentUser.realName;
+                
+                // 显示头像
+                const element = document.getElementById('user-avatar');
+                if (currentUser.avatar) {
+                    element.innerHTML = `<img src="${currentUser.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    element.textContent = currentUser.realName.charAt(0);
+                }
+            }
+        }
+        
+        // 加载作业信息
+        function loadAssignmentInfo() {
+            const assignmentId = sessionStorage.getItem('currentAssignmentId');
+            const assignmentTitle = sessionStorage.getItem('currentAssignmentTitle');
+            const courseName = sessionStorage.getItem('currentCourseName');
+            
+            if (assignmentTitle) {
+                document.getElementById('assignment-title').textContent = assignmentTitle;
+            }
+            if (courseName) {
+                document.getElementById('assignment-course').textContent = `课程: ${courseName}`;
+            }
+        }
+        
+        // 处理文件选择
+        let selectedFiles = [];
+        
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            selectedFiles = selectedFiles.concat(files);
+            updateFileList();
+            previewFiles();
+        }
+        
+        // 更新文件列表显示
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            
+            if (selectedFiles.length === 0) {
+                return;
+            }
+            
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                const fileSize = formatFileSize(file.size);
+                fileItem.innerHTML = `
+                    <div>
+                        <i class="fas fa-file"></i>
+                        <span>${file.name}</span>
+                        <small>(${fileSize})</small>
+                    </div>
+                    <button onclick="removeFile(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+        
+        // 预览文件（仅支持图片）
+        function previewFiles() {
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.innerHTML = '';
+            
+            // 只预览图片文件
+            const imageFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length > 0) {
+                const image = document.createElement('img');
+                image.className = 'preview-image';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    image.src = e.target.result;
+                };
+                reader.readAsDataURL(imageFiles[0]); // 只预览第一张图片
+                
+                previewContainer.appendChild(image);
+            }
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // 移除文件
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+            previewFiles();
+        }
+        
+        // 提交作业
+        function submitAssignment() {
+            const assignmentId = sessionStorage.getItem('currentAssignmentId');
+            const content = document.getElementById('submission-content').value;
+            const resultElement = document.getElementById('submission-result');
+            
+            if (!assignmentId) {
+                resultElement.innerHTML = '<div class="submission-result error">无法获取作业信息</div>';
+                return;
+            }
+            
+            if (!content && selectedFiles.length === 0) {
+                resultElement.innerHTML = '<div class="submission-result error">请填写作业内容或上传文件</div>';
+                return;
+            }
+            
+            // 获取当前用户信息
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                resultElement.innerHTML = '<div class="submission-result error">请先登录</div>';
+                return;
+            }
+            
+            // 显示提交中状态
+            resultElement.innerHTML = '<div class="submission-result" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;">提交中...</div>';
+            
+            // 创建FormData对象以支持文件上传
+            const formData = new FormData();
+            formData.append('assignmentId', assignmentId);
+            formData.append('studentId', currentUser.id);  // 添加学生ID
+            formData.append('content', content);
+            
+            // 添加选中的文件
+            selectedFiles.forEach((file, index) => {
+                formData.append('files', file);
+            });
+            
+            // 发送提交请求
+            fetch('/api/submissions', {
+                method: 'POST',
+                body: formData // 使用FormData以支持文件上传
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<div class="submission-result success">作业提交成功！</div>';
+                    
+                    // 清空表单和文件
+                    document.getElementById('submission-content').value = '';
+                    selectedFiles = [];
+                    updateFileList();
+                    document.getElementById('preview-container').innerHTML = '';
+                    
+                    // 更新学生作业列表中的状态
+                    setTimeout(() => {
+                        // 跳转到作业详情页面
+                        window.location.href = 'submission-view.html';
+                    }, 1000);
+                } else {
+                    resultElement.innerHTML = `<div class="submission-result error">提交失败: ${data.msg}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('提交失败:', error);
+                resultElement.innerHTML = '<div class="submission-result error">提交失败，请稍后重试</div>';
+            });
+        }
+        
+        // 返回上一个页面
+        function goBack() {
+            window.history.back();
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

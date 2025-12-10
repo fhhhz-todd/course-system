@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统 - 教师主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        /* 功能菜单 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+            display: flex;
+        }
+        
+        /* 我的信息样式 */
+        .profile-info {
+            text-align: center;
+        }
+        
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            max-width: 400px;
+            margin: 15px auto;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-group label {
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* 按钮样式 */
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-select:hover {
+            background-color: #4a3ce0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 6px 12px; /* 调整为更小的尺寸 */
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 14px; /* 调整字体大小 */
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-danger:hover {
+            background-color: #ff3b3b;
+        }
+        
+        .btn-selected {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-selected:hover {
+            background-color: #5a6268;
+        }
+
+        /* 隐藏内容区域 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        
+        /* 卡片基础样式 */
+        .card {
+            background: #fff;
+            border-radius: 15px; /* 大圆角 */
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 柔和阴影 */
+        }
+        
+        /* 搜索栏布局：让它像“我的作业”一样长条化 */
+        .search-container {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 5px;
+            background-color: #f5f7fa; /* 浅灰色底色 */
+            border-radius: 10px;
+        }
+        
+        #message-search {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: transparent; /* 配合容器底色 */
+        }
+        
+        /* 按钮样式：统一紫色圆角 */
+        .btn-select {
+            background-color: #5c5cf0; 
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-select:hover {
+            background-color: #4a4ad4;
+            transform: translateY(-1px);
+        }
+        
+        /* 状态标签样式：让已读/未读更有质感 */
+        .message-status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        /* 消息列表样式 */
+        .message-actions {
+            margin-bottom: 15px;
+        }
+        
+        .message-checkbox-cell {
+            width: 30px;
+            text-align: center;
+        }
+        
+        .message-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .read {
+            background-color: #d4edda;
+            color: #28a745;
+        }
+        
+        .unread {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .message-operation {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        /* 教师端发送消息 - 学生勾选行样式：姓名在左，勾选框在右（上一版布局） */
+        .student-checkbox-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .student-checkbox-row span {
+            flex: 1;
+            text-align: left;
+            white-space: nowrap; /* 姓名横向一行显示，不竖排 */
+        }
+
+        /* 让勾选框都在同一竖直线右对齐 */
+        .student-checkbox-row .message-student-checkbox {
+            margin-left: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-chalkboard-teacher"></i> TQMS
+        </div>
+        <button class="menu-item active" data-target="dashboard">
+            <i class="fas fa-home"></i> 首页
+        </button>
+        <button class="menu-item" data-target="profile">
+            <i class="fas fa-user"></i> 我的信息
+        </button>
+        <button class="menu-item" data-target="courses">
+            <i class="fas fa-book-open"></i> 我的课程
+        </button>
+        <button class="menu-item" data-target="assignments">
+            <i class="fas fa-file-alt"></i> 作业管理
+        </button>
+        <button class="menu-item" data-target="send-message">
+            <i class="fas fa-paper-plane"></i> 发送消息
+        </button>
+        <button class="menu-item" data-target="messages">
+            <i class="fas fa-envelope"></i> 我的消息
+        </button>
+        
+        <button class="menu-item logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">教师主页</h1>
+            <div class="user-info">
+                <span id="welcome-message"></span>
+                <div class="avatar" id="user-avatar">T</div>
+            </div>
+        </div>
+
+        <!-- 首页内容 -->
+        <div id="dashboard" class="content-section active">
+            <div class="card">
+                <h2>欢迎使用课程管理系统</h2>
+                <p>您好，老师！在这里您可以管理您的课程、发布和批改作业。</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card" data-target="profile">
+                        <div class="feature-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="feature-title">我的信息</div>
+                        <div class="feature-desc">查看和修改个人信息</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="courses">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="feature-title">我的课程</div>
+                        <div class="feature-desc">查看和管理教授的课程</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="assignments">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="feature-title">作业管理</div>
+                        <div class="feature-desc">发布和管理课程作业</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="submissions">
+                        <div class="feature-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <div class="feature-title">作业批改</div>
+                        <div class="feature-desc">批改学生提交的作业</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="send-message">
+                        <div class="feature-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="feature-title">发送消息</div>
+                        <div class="feature-desc">发送消息给学生或管理员</div>
+                    </div>
+                    
+                    <div class="feature-card" data-target="messages">
+                        <div class="feature-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="feature-title">我的消息</div>
+                        <div class="feature-desc">查看系统消息</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的信息内容 -->
+        <div id="profile" class="content-section">
+            <div class="card">
+                <h2>我的信息</h2>
+                <div class="profile-info">
+                    <div class="avatar-large" id="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; background: #e0e5f2; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--primary-color); margin: 0 auto 20px;"></div>
+                    <div class="info-group">
+                        <label>ID:</label>
+                        <span id="profile-id"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>用户名:</label>
+                        <span id="profile-username"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>真实姓名:</label>
+                        <span id="profile-realname"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>角色:</label>
+                        <span>教师</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn-select" onclick="window.location.href='profile-edit.html'" style="margin: 0 10px;">修改个人信息</button>
+                    <button class="btn-select" onclick="window.location.href='password-change.html'" style="margin: 0 10px;">修改密码</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的课程内容 -->
+        <div id="courses" class="content-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>我的课程</h2>
+                    <button class="btn-select" onclick="showAddCourseForm()" style="padding: 8px 16px;">添加新课程</button>
+                </div>
+                
+                <div class="search-box" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                    <input type="text" id="course-search" placeholder="搜索课程..." style="flex: 1; padding: 12px 15px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe; outline: none; box-sizing: border-box;">
+                    <button class="btn-select" onclick="searchCourses()" style="padding: 12px 20px;">搜索</button>
+                </div>
+                
+                <div id="courses-list">
+                    <p>加载中...</p>
+                </div>
+                
+                <!-- 添加课程表单（默认隐藏） -->
+                <div id="add-course-form" style="display: none; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <h3>添加新课程</h3>
+                    <div class="form-group">
+                        <label for="course-id">课程编号</label>
+                        <input type="text" id="course-id" placeholder="请输入课程编号">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-name">课程名称</label>
+                        <input type="text" id="course-name" placeholder="请输入课程名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-credits">学分</label>
+                        <input type="number" id="course-credits" placeholder="请输入学分" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-teacher">教师名称</label>
+                        <input type="text" id="course-teacher" placeholder="请输入教师名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-description">课程描述</label>
+                        <textarea id="course-description" rows="3" placeholder="请输入课程描述"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-select" onclick="addCourse()" style="flex: 1;">添加课程</button>
+                        <button class="btn-outline" onclick="hideAddCourseForm()" style="flex: 1;">取消</button>
+                    </div>
+                    <div id="course-result" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 作业管理内容 -->
+        <div id="assignments" class="content-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>作业管理</h2>
+                    <button class="btn-select" onclick="showPublishAssignmentForm()" style="padding: 8px 16px;">发布新作业</button>
+                </div>
+                
+                <div class="search-box" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                    <input type="text" id="assignment-search" placeholder="搜索作业..." style="flex: 1; padding: 12px 15px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe; outline: none; box-sizing: border-box;">
+                    <button class="btn-select" onclick="searchAssignments()" style="padding: 12px 20px;">搜索</button>
+                </div>
+                
+                <div id="assignments-list">
+                    <p>加载中...</p>
+                </div>
+                
+                <hr style="margin: 30px 0;">
+                
+                <div id="publish-assignment-section" style="display: none;">
+                    <h3>发布新作业</h3>
+                    <div class="form-group">
+                        <label for="assignment-course">所属课程</label>
+                        <select id="assignment-course" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-title">作业标题</label>
+                        <input type="text" id="assignment-title" placeholder="请输入作业标题">
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-desc">作业描述</label>
+                        <textarea id="assignment-desc" rows="3" placeholder="请输入作业描述" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-deadline">截止日期</label>
+                        <input type="date" id="assignment-deadline" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-files">附件（可选）</label>
+                        <input type="file" id="assignment-files" multiple style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                        <small style="color: #a3aed0;">可选择多个文件上传</small>
+                    </div>
+                    <button class="btn-select" onclick="publishAssignment()">发布作业</button>
+                    <button class="btn-outline" onclick="hidePublishAssignmentForm()" style="margin-left: 10px;">取消</button>
+                    <div id="assignment-result" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的消息内容 -->
+        <div id="messages" class="content-section">
+            <div class="card">
+                <h2>我的消息</h2>
+                <div class="search-container">
+                    <input type="text" id="message-search" placeholder="搜索消息...">
+                    <button class="btn-select" onclick="searchMessages()">搜索</button>
+                </div>
+                <div id="messages-list">
+                    <p>暂无消息</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 发送消息内容 -->
+        <div id="send-message" class="content-section">
+            <div class="card">
+                <h2>发送消息</h2>
+                
+                <!-- 先选择发送对象：学生 / 管理员 -->
+                <div class="form-group">
+                    <label>发送对象</label>
+                    <select id="teacher-message-target-type" onchange="onTeacherMessageTargetTypeChange()" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                        <option value="student">课程学生</option>
+                        <option value="admin">管理员</option>
+                    </select>
+                </div>
+                
+                <!-- 发给课程学生 -->
+                <div id="send-to-student-block">
+                    <p>向您负责课程的学生发送消息</p>
+                    
+                    <div class="form-group">
+                        <label for="message-course">选择课程</label>
+                        <select id="message-course" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;">
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label>选择学生</label>
+                        <button type="button" class="btn-outline" onclick="selectAllStudents()" style="padding: 4px 8px; font-size: 12px;">全选</button>
+                        <button type="button" class="btn-outline" onclick="clearAllStudents()" style="padding: 4px 8px; font-size: 12px;">清空</button>
+                    </div>
+                    <!-- 改为复选框列表，支持勾选多个或全选 -->
+                    <div id="message-students-container" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe; height: 180px; overflow-y: auto; font-size: 14px; color: #333;">
+                        请选择课程
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <label for="message-title">消息标题</label>
+                        <input type="text" id="message-title" placeholder="请输入消息标题">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-content">消息内容</label>
+                        <textarea id="message-content" rows="5" placeholder="请输入消息内容" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;"></textarea>
+                    </div>
+                    <button class="btn-select" onclick="sendMessage()">发送消息给学生</button>
+                    <div id="message-send-result" style="margin-top: 15px;"></div>
+                </div>
+                
+                <!-- 发给管理员 -->
+                <div id="send-to-admin-block-teacher" style="display:none; margin-top: 15px;">
+                    <h3>发送消息给管理员</h3>
+                    <p>联系系统管理员</p>
+                    <div class="form-group">
+                        <label for="admin-message-title">标题</label>
+                        <input type="text" id="admin-message-title" placeholder="请输入消息标题">
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-message-content">内容</label>
+                        <textarea id="admin-message-content" rows="4" placeholder="请输入消息内容" style="width: 100%; padding: 12px; border: 1px solid #e0e5f2; border-radius: 12px; background: #f4f7fe;"></textarea>
+                    </div>
+                    <button class="btn-select" onclick="sendMessageToAdmin()">发送消息给管理员</button>
+                    <div id="admin-message-send-result" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 作业提交情况自动刷新（教师端“作业管理”用）
+        let currentAssignmentsForStatus = [];
+        let assignmentStatusTimer = null;
+        
+        function isAssignmentsSectionVisible() {
+            const el = document.getElementById('assignments');
+            if (!el) return false;
+            return window.getComputedStyle(el).display !== 'none';
+        }
+        
+        function startAssignmentStatusAutoRefresh() {
+            stopAssignmentStatusAutoRefresh();
+            // 每 5 秒刷新一次提交情况
+            assignmentStatusTimer = setInterval(() => {
+                if (!isAssignmentsSectionVisible()) return;
+                refreshAllAssignmentStatuses();
+            }, 5000);
+        }
+        
+        function stopAssignmentStatusAutoRefresh() {
+            if (assignmentStatusTimer) {
+                clearInterval(assignmentStatusTimer);
+                assignmentStatusTimer = null;
+            }
+        }
+        
+        function refreshAllAssignmentStatuses() {
+            if (!currentAssignmentsForStatus || currentAssignmentsForStatus.length === 0) return;
+            currentAssignmentsForStatus.forEach(a => refreshSingleAssignmentStatus(a));
+        }
+        
+        function refreshSingleAssignmentStatus(assignment) {
+            if (!assignment || !assignment.id) return;
+            const cell = document.getElementById(`status-${assignment.id}`);
+            if (!cell) return;
+            
+            apiRequest(`/api/submissions/assignment/${assignment.id}`)
+                .then(response => response.json())
+                .then(submissionData => {
+                    if (submissionData.code === 200 && submissionData.data) {
+                        const submittedCount = submissionData.data.length;
+                        
+                        fetch(`/api/student-courses/course/${assignment.courseId}/students`)
+                            .then(response => response.json())
+                            .then(studentData => {
+                                if (studentData.code === 200 && studentData.data) {
+                                    const totalStudents = studentData.data.length;
+                                    cell.textContent = `${submittedCount}/${totalStudents}`;
+                                } else {
+                                    fetch(`/api/courses/${assignment.courseId}`)
+                                        .then(response => response.json())
+                                        .then(courseData => {
+                                            const totalStudents = (courseData.code === 200 && courseData.data && courseData.data.studentCount !== undefined)
+                                                ? courseData.data.studentCount
+                                                : 0;
+                                            cell.textContent = `${submittedCount}/${totalStudents}`;
+                                        })
+                                        .catch(() => { cell.textContent = `${submittedCount}/0`; });
+                                }
+                            })
+                            .catch(() => {
+                                fetch(`/api/courses/${assignment.courseId}`)
+                                    .then(response => response.json())
+                                    .then(courseData => {
+                                        const totalStudents = (courseData.code === 200 && courseData.data && courseData.data.studentCount !== undefined)
+                                            ? courseData.data.studentCount
+                                            : 0;
+                                        cell.textContent = `${submittedCount}/${totalStudents}`;
+                                    })
+                                    .catch(() => { cell.textContent = `${submittedCount}/0`; });
+                            });
+                    } else {
+                        cell.textContent = '0/0';
+                    }
+                })
+                .catch(() => {
+                    cell.textContent = '0/0';
+                });
+        }
+        // 通用的 API 请求函数，自动添加用户信息到请求头
+        function apiRequest(url, options = {}) {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                return Promise.reject(new Error('用户未登录'));
+            }
+            
+            const headers = {
+                'X-User-Id': currentUser.id,
+                'X-User-Role': currentUser.role,
+                ...options.headers
+            };
+            
+            if (!options.headers || !options.headers['Content-Type']) {
+                headers['Content-Type'] = 'application/json';
+            }
+            
+            return fetch(url, {
+                ...options,
+                headers
+            });
+        }
+        
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                // 如果没有登录信息，跳转到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            updateUserInfoDisplay();
+            
+            // 加载课程和作业数据
+            loadCourses();
+            loadAssignments();
+            loadMessages();
+            loadAssignmentCourses(); // 加载发布作业页面的课程列表
+            
+            // 监听页面重新获得焦点时更新用户信息和当前板块数据
+            window.addEventListener('focus', function() {
+                updateUserInfoDisplay();
+                const activeSection = document.querySelector('.content-section.active');
+                if (!activeSection) return;
+                const id = activeSection.id;
+                if (id === 'courses') {
+                    loadCourses();
+                    loadAssignmentCourses();
+                    loadMessageCourses();
+                } else if (id === 'assignments') {
+                    loadAssignments();
+                    loadAssignmentCourses();
+                } else if (id === 'messages') {
+                    loadMessages();
+                } else if (id === 'send-message') {
+                    loadMessageCourses();
+                }
+            });
+            
+            console.log('教师主页已加载');
+            
+            // 初始化退出登录按钮显示（默认显示，因为首页是dashboard）
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn) {
+                logoutBtn.style.display = 'flex';
+            }
+            
+            // 检查URL hash，自动显示对应的section
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                // 如果hash匹配一个有效的section，显示它
+                const validSections = ['dashboard', 'profile', 'courses', 'assignments', 'submissions', 'messages', 'send-message'];
+                if (validSections.includes(hash)) {
+                    showSection(hash);
+                    // 加载对应的数据
+                    if (hash === 'courses') {
+                        loadCourses();
+                        loadAssignmentCourses();
+                        loadMessageCourses();
+                    } else if (hash === 'assignments') {
+                        loadAssignments();
+                        loadAssignmentCourses();
+                    } else if (hash === 'messages') {
+                        loadMessages();
+                    } else if (hash === 'profile') {
+                        updateUserInfoDisplay();
+                    } else if (hash === 'submissions') {
+                        loadSubmissions();
+                    } else if (hash === 'send-message') {
+                        loadMessageCourses();
+                    }
+                }
+            }
+            
+            // 添加菜单点击事件
+            document.querySelectorAll('.menu-item[data-target]').forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                    // 更新用户信息显示
+                    if (target === 'profile') {
+                        updateUserInfoDisplay();
+                    }
+                    // 当切换到课程页面时重新加载课程数据
+                    if (target === 'courses') {
+                        loadCourses();
+                        // 课程变化会影响“发布作业/发送消息”的课程下拉
+                        loadAssignmentCourses();
+                        loadMessageCourses();
+                    }
+                    // 当切换到作业管理时，刷新作业列表与可选课程
+                    if (target === 'assignments') {
+                        loadAssignments();
+                        loadAssignmentCourses();
+                    }
+                    // 当切换到消息页面时加载消息数据
+                    if (target === 'messages') {
+                        loadMessages();
+                    }
+                });
+            });
+            
+            // 添加功能卡片点击事件
+            document.querySelectorAll('.feature-card[data-target]').forEach(card => {
+                card.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                    // 更新用户信息显示
+                    if (target === 'profile') {
+                        updateUserInfoDisplay();
+                    }
+                    // 当切换到课程页面时重新加载课程数据
+                    if (target === 'courses') {
+                        loadCourses();
+                        loadAssignmentCourses();
+                        loadMessageCourses();
+                    }
+                    // 从首页直接点“作业管理”“作业批改”等功能卡时，也刷新作业/课程列表
+                    if (target === 'assignments') {
+                        loadAssignments();
+                        loadAssignmentCourses();
+                    }
+                    if (target === 'submissions') {
+                        loadSubmissions();
+                    }
+                });
+            });
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示欢迎信息
+                document.getElementById('welcome-message').textContent = '欢迎你，' + currentUser.realName + '！';
+                
+                // 显示头像
+                updateAvatarDisplay('user-avatar', currentUser);
+                
+                // 在我的信息页面也显示用户信息
+                updateAvatarDisplay('profile-avatar', currentUser);
+                document.getElementById('profile-id').textContent = currentUser.id;
+                document.getElementById('profile-username').textContent = currentUser.username;
+                document.getElementById('profile-realname').textContent = currentUser.realName;
+            }
+        }
+        
+        // 更新头像显示的通用函数
+        function updateAvatarDisplay(elementId, user) {
+            const element = document.getElementById(elementId);
+            if (user.avatar) {
+                element.innerHTML = `<img src="${user.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                element.textContent = user.realName.charAt(0);
+            }
+        }
+        
+        // 显示指定的内容区域
+        function showSection(sectionId) {
+            // 隐藏所有内容区域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 移除所有菜单项的激活状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 显示目标内容区域
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 激活对应的菜单项
+            document.querySelector(`.menu-item[data-target="${sectionId}"]`).classList.add('active');
+            
+            // 更新页面标题
+            const titles = {
+                'dashboard': '教师主页',
+                'profile': '我的信息',
+                'courses': '我的课程',
+                'assignments': '作业管理',
+                'messages': '我的消息'
+            };
+            
+            document.querySelector('.page-title').textContent = titles[sectionId] || '教师主页';
+            
+            // 退出登录按钮始终显示在主页（所有section都显示）
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn) {
+                logoutBtn.style.display = 'flex';
+            }
+        }
+        
+        // 修改密码功能
+        function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const resultElement = document.getElementById('password-result');
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有密码字段</p>';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">新密码和确认密码不一致</p>';
+                return;
+            }
+            
+            // 这里应该是调用后端API修改密码
+            resultElement.innerHTML = '<p style="color: green;">密码修改成功</p>';
+            
+            // 清空输入框
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        }
+        
+        // 加载发布作业页面的课程列表
+        function loadAssignmentCourses() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                return;
+            }
+            
+            fetch(`/api/courses/teacher/${currentUser.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const courseSelect = document.getElementById('assignment-course');
+                    if (data.code === 200 && data.data) {
+                        // 清空现有选项
+                        courseSelect.innerHTML = '<option value="">请选择课程</option>';
+                        
+                        // 添加新选项
+                        data.data.forEach(course => {
+                            const option = document.createElement('option');
+                            option.value = course.id;
+                            option.textContent = course.courseName;
+                            courseSelect.appendChild(option);
+                        });
+                    } else {
+                        courseSelect.innerHTML = '<option value="">获取课程列表失败</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程列表失败:', error);
+                    const courseSelect = document.getElementById('assignment-course');
+                    courseSelect.innerHTML = '<option value="">获取课程列表失败</option>';
+                });
+        }
+        
+        // 显示发布作业表单
+        function showPublishAssignmentForm() {
+            document.getElementById('publish-assignment-section').style.display = 'block';
+        }
+        
+        // 隐藏发布作业表单
+        function hidePublishAssignmentForm() {
+            document.getElementById('publish-assignment-section').style.display = 'none';
+            
+            // 清空表单
+            document.getElementById('assignment-course').value = '';
+            document.getElementById('assignment-title').value = '';
+            document.getElementById('assignment-desc').value = '';
+            document.getElementById('assignment-deadline').value = '';
+            document.getElementById('assignment-files').value = '';
+            
+            // 清空结果提示
+            document.getElementById('assignment-result').innerHTML = '';
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+        
+        // 加载课程数据
+        function loadCourses() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                document.getElementById('courses-list').innerHTML = '<p>请先登录</p>';
+                return;
+            }
+            
+            // 显示加载状态
+            document.getElementById('courses-list').innerHTML = '<p>加载中...</p>';
+            
+            // 从后端获取该教师的课程数据
+            fetch(`/api/courses/teacher/${currentUser.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const coursesList = document.getElementById('courses-list');
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        // 生成课程表格
+                        let tableHtml = `
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: #f4f7fe;">
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">课程编号</th>
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">课程名称</th>
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">学分</th>
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">教师名称</th>
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">描述</th>
+                                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        
+                        data.data.forEach(course => {
+                            tableHtml += `
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.courseCode || ''}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.courseName || ''}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.credits || 0}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.teacherName || ''}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${course.description || ''}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                                        <button class="btn-select" style="padding: 6px 12px; font-size: 14px; margin-right: 5px;" onclick="viewStudents(${course.id}, '${course.courseName}')">查看学生</button>
+                                        <button class="btn-danger" style="padding: 6px 12px; font-size: 14px;" onclick="deleteCourse(${course.id})">删除</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        
+                        tableHtml += `
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        coursesList.innerHTML = tableHtml;
+                    } else {
+                        coursesList.innerHTML = '<p>暂无课程信息</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程数据失败:', error);
+                    document.getElementById('courses-list').innerHTML = '<p>加载课程数据失败，请稍后重试</p>';
+                });
+        }
+        
+        // 搜索课程
+        function searchCourses() {
+            // 对于简化版本，我们重新加载所有课程（实际项目中这里应该实现真正的搜索功能）
+            loadCourses();
+        }
+        
+        // 显示添加课程表单
+        function showAddCourseForm() {
+            document.getElementById('add-course-form').style.display = 'block';
+            
+            // 自动填充教师名称字段
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('course-teacher').value = currentUser.realName;
+                // 教师名称字段设为只读，防止修改
+                document.getElementById('course-teacher').readOnly = true;
+            }
+        }
+        
+        // 隐藏添加课程表单
+        function hideAddCourseForm() {
+            document.getElementById('add-course-form').style.display = 'none';
+        }
+        
+        // 添加课程
+        function addCourse() {
+            const courseId = document.getElementById('course-id').value;
+            const courseName = document.getElementById('course-name').value;
+            const courseCredits = document.getElementById('course-credits').value;
+            const courseTeacher = document.getElementById('course-teacher').value;
+            const courseDescription = document.getElementById('course-description').value;
+            const resultElement = document.getElementById('course-result');
+            
+            // 获取当前登录用户信息
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请先登录</p>';
+                return;
+            }
+            
+            if (!courseId || !courseName || !courseCredits || !courseTeacher) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写课程编号、课程名称、学分和教师名称</p>';
+                return;
+            }
+            
+            // 验证学分是否为有效数字
+            const credits = parseInt(courseCredits);
+            if (isNaN(credits) || credits <= 0) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">学分必须是大于0的整数</p>';
+                return;
+            }
+            
+            // 准备课程数据
+            const courseData = {
+                courseCode: courseId,
+                courseName: courseName,
+                credits: parseInt(credits),
+                teacherId: currentUser.id,
+                description: courseDescription
+            };
+            
+            // 发送请求到后端添加课程
+            fetch('/api/courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">课程添加成功！</p>';
+                    
+                    // 课程创建成功后，通常不需要给教师发送通知，因为这是教师自己的操作
+                    
+                    // 清空表单
+                    document.getElementById('course-id').value = '';
+                    document.getElementById('course-name').value = '';
+                    document.getElementById('course-credits').value = '';
+                    document.getElementById('course-teacher').value = '';
+                    document.getElementById('course-description').value = '';
+                    
+                    // 隐藏表单
+                    hideAddCourseForm();
+                    
+                    // 重新加载课程列表
+                    loadCourses();
+                    // 新课程应立刻出现在“发布作业/发送消息”的课程下拉中
+                    loadAssignmentCourses();
+                    loadMessageCourses();
+                } else {
+                    resultElement.innerHTML = `<p style="color: #ff5b5b;">课程添加失败: ${data.msg || '未知错误'}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('添加课程失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">课程添加失败，请稍后重试</p>';
+            });
+        }
+        
+        // 删除课程
+        function deleteCourse(courseId) {
+            if (confirm("确定要删除这个课程吗？")) {
+                // 发送请求到后端删除课程
+                fetch(`/api/courses/${courseId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("课程删除成功！");
+                        
+                        // 删除课程后，可以给课程中的学生发送通知（如果需要的话）
+                        // 为了保持一致，这里暂时不发送系统消息，因为是教师自己的操作
+                        
+                        loadCourses();
+                    } else {
+                        alert(`课程删除失败: ${data.msg || '未知错误'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('删除课程失败:', error);
+                    alert("课程删除失败，请稍后重试");
+                });
+            }
+        }
+        
+        // 查看学生
+        function viewStudents(courseId, courseName) {
+            // 跳转到学生列表页面，并传递课程ID和课程名称参数
+            window.location.href = `students.html?courseId=${courseId}&courseName=${encodeURIComponent(courseName)}`;
+        }
+        
+        // 加载作业数据
+        function loadAssignments() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                document.getElementById('assignments-list').innerHTML = '<p>请先登录</p>';
+                return;
+            }
+            
+            // 显示加载状态
+            document.getElementById('assignments-list').innerHTML = '<p>加载中...</p>';
+            
+            // 获取教师的所有课程
+            fetch(`/api/courses/teacher/${currentUser.id}`)
+                .then(response => response.json())
+                .then(courseData => {
+                    if (courseData.code === 200 && courseData.data) {
+                        // 获取所有课程ID
+                        const courseIds = courseData.data.map(course => course.id);
+                        
+                        // 获取所有课程的作业
+                        let allAssignments = [];
+                        let loadedCount = 0;
+                        
+                        if (courseIds.length === 0) {
+                            document.getElementById('assignments-list').innerHTML = '<p>暂无课程，无法加载作业</p>';
+                            return;
+                        }
+                        
+                        courseIds.forEach(courseId => {
+                            fetch(`/api/assignments/course/${courseId}`)
+                                .then(response => response.json())
+                                .then(assignmentData => {
+                                    if (assignmentData.code === 200 && assignmentData.data) {
+                                        allAssignments = allAssignments.concat(assignmentData.data);
+                                    }
+                                    
+                                    loadedCount++;
+                                    if (loadedCount === courseIds.length) {
+                                        displayAssignments(allAssignments);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('获取课程作业失败:', error);
+                                    loadedCount++;
+                                    if (loadedCount === courseIds.length) {
+                                        displayAssignments(allAssignments);
+                                    }
+                                });
+                        });
+                    } else {
+                        document.getElementById('assignments-list').innerHTML = '<p>获取课程信息失败</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程列表失败:', error);
+                    document.getElementById('assignments-list').innerHTML = '<p>加载作业数据失败</p>';
+                });
+        }
+        
+        // 搜索作业
+        function searchAssignments() {
+            const searchTerm = document.getElementById('assignment-search').value.toLowerCase();
+            // 模拟搜索功能
+            loadAssignments(); // 实际项目中应根据搜索词筛选数据
+        }
+        
+        // 发布作业
+        function publishAssignment() {
+            const course = document.getElementById('assignment-course').value;
+            const title = document.getElementById('assignment-title').value;
+            const description = document.getElementById('assignment-desc').value;
+            const deadline = document.getElementById('assignment-deadline').value;
+            const files = document.getElementById('assignment-files').files;
+            const resultElement = document.getElementById('assignment-result');
+            
+            if (!course || !title || !deadline) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写必填字段</p>';
+                return;
+            }
+            
+            // 使用FormData发送数据（支持文件上传）
+            const formData = new FormData();
+            formData.append('courseId', course);
+            formData.append('title', title);
+            formData.append('description', description || '');
+            formData.append('deadline', deadline);
+            
+            // 添加文件
+            if (files && files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('files', files[i]);
+                }
+            }
+            
+            // 发送请求到后端发布作业
+            fetch('/api/assignments', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">作业发布成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('assignment-course').value = '';
+                    document.getElementById('assignment-title').value = '';
+                    document.getElementById('assignment-desc').value = '';
+                    document.getElementById('assignment-deadline').value = '';
+                    document.getElementById('assignment-files').value = '';
+                    
+                    // 重新加载作业列表
+                    loadAssignments();
+                    
+                    // 发布成功后自动隐藏表单
+                    setTimeout(() => {
+                        hidePublishAssignmentForm();
+                    }, 1000); // 1秒后自动隐藏表单
+                } else {
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">作业发布失败: ' + (data.msg || '未知错误') + '</p>';
+                }
+            })
+            .catch(error => {
+                console.error('作业发布失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">作业发布失败，请稍后重试</p>';
+            });
+        }
+        
+        // 显示作业列表
+        function displayAssignments(assignments) {
+            const assignmentsList = document.getElementById('assignments-list');
+            if (!assignments || assignments.length === 0) {
+                assignmentsList.innerHTML = '<p>暂无作业</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">作业名称</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">所属课程</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">发布时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">截止日期</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">提交情况</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            assignments.forEach(assignment => {
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${assignment.title || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${assignment.courseName || ''}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${assignment.createTime ? new Date(assignment.createTime).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${assignment.deadline ? new Date(assignment.deadline).toLocaleDateString() : 'N/A'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;" id="status-${assignment.id}">加载中...</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-select" style="padding: 6px 12px; font-size: 14px;" onclick="viewSubmissions(${assignment.id})">查看详情</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            assignmentsList.innerHTML = tableHtml;
+            // 保存当前作业列表，并启动自动刷新
+            currentAssignmentsForStatus = assignments || [];
+            startAssignmentStatusAutoRefresh();
+            
+            // 异步获取每个作业的提交情况
+            assignments.forEach(assignment => {
+                refreshSingleAssignmentStatus(assignment);
+            });
+        }
+        
+        // 查看提交详情
+        function viewSubmissions(assignmentId) {
+            // 跳转到作业详情页面
+            window.location.href = `assignment-detail.html?assignmentId=${assignmentId}`;
+        }
+        
+        // 加载待批改作业数据
+        function loadSubmissions() {
+            const submissionsList = document.getElementById('submissions-list');
+            submissionsList.innerHTML = '<p>加载中...</p>';
+            
+            // 从后端获取所有待批改的作业提交
+            apiRequest('/api/submissions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        displaySubmissions(data.data);
+                    } else {
+                        submissionsList.innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取待批改作业失败:', error);
+                    submissionsList.innerHTML = '<p>加载失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示待批改作业列表
+        function displaySubmissions(submissions) {
+            const submissionsList = document.getElementById('submissions-list');
+            
+            if (!submissions || submissions.length === 0) {
+                submissionsList.innerHTML = '<p>暂无待批改作业</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f4f7fe;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">学生姓名</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">作业名称</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">所属课程</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">提交时间</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">状态</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e0e5f2;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            submissions.forEach(submission => {
+                // 获取学生和作业信息
+                const studentName = submission.studentName || '未知学生';
+                const assignmentName = submission.assignmentTitle || '未知作业';
+                const courseName = submission.courseName || '未知课程';
+                const submitTime = submission.createTime ? new Date(submission.createTime).toLocaleString() : '未知时间';
+                const status = submission.status === 1 ? '已批改' : '待批改';
+                const statusClass = submission.status === 1 ? 'd4edda' : 'ffebcc';
+                const statusColor = submission.status === 1 ? '28a745' : 'ff9900';
+                
+                tableHtml += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${studentName}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${assignmentName}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${courseName}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">${submitTime}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <span style="background-color: #${statusClass}; color: #${statusColor}; padding: 4px 8px; border-radius: 4px;">${status}</span>
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #e0e5f2;">
+                            <button class="btn-select" style="padding: 6px 12px; font-size: 14px;" onclick="showGradeSubmissionPage(${submission.id}, '${assignmentName}', '${courseName}', '${studentName}')">批改</button>
+                            <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-left: 5px;" onclick="deleteSubmission(${submission.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            
+            submissionsList.innerHTML = tableHtml;
+        }
+        
+        // 显示作业批改页面
+        function showGradeSubmissionPage(submissionId, assignmentTitle, courseName, studentName) {
+            // 跳转到作业批改页面，使用URL参数传递信息
+            window.location.href = `submission-detail.html?submissionId=${submissionId}`;
+        }
+        
+        // 搜索待批改作业
+        function searchSubmissions() {
+            const searchTerm = document.getElementById('submission-search').value.toLowerCase();
+            // 实际项目中应根据搜索词筛选数据，这里暂时重新加载
+            loadSubmissions();
+        }
+        
+        // 批改作业
+        function gradeSubmission(submissionId) {
+            // 实际批改逻辑在submission-detail.html页面中
+            window.location.href = `submission-detail.html?submissionId=${submissionId}`;
+        }
+        
+        // 删除提交记录
+        function deleteSubmission(submissionId) {
+            if (confirm('确定要删除这条提交记录吗？此操作不可恢复！')) {
+                apiRequest(`/api/submissions/${submissionId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert('删除成功！');
+                        // 重新加载当前页面以更新列表
+                        loadSubmissions();
+                    } else {
+                        alert('删除失败: ' + (data.msg || '未知错误'));
+                    }
+                })
+                .catch(error => {
+                    console.error('删除失败:', error);
+                    alert('删除失败，请稍后重试');
+                });
+            }
+        }
+        
+        // 加载消息
+        function loadMessages() {
+            const messagesList = document.getElementById('messages-list');
+            if (!messagesList) {
+                console.error('消息列表元素不存在');
+                return;
+            }
+            
+            // 显示加载状态
+            messagesList.innerHTML = '<p>加载中...</p>';
+            
+            // 获取当前用户信息
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                messagesList.innerHTML = '<p>请先登录</p>'; 
+                return;
+            }
+            
+            // 调用后端API获取用户消息
+            fetch(`/api/messages/user/${currentUser.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        displayMessages(data.data);
+                    } else {
+                        messagesList.innerHTML = `<p>加载失败: ${data.msg}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取消息失败:', error);
+                    messagesList.innerHTML = '<p>加载消息失败，请稍后重试</p>';
+                });
+        }
+        
+        // 显示消息列表
+        function displayMessages(messages) {
+            const messagesList = document.getElementById('messages-list');
+            if (!messages || messages.length === 0) {
+                messagesList.innerHTML = '<p>暂无消息</p>';
+                return;
+            }
+            
+            let tableHtml = `
+                <div class="message-actions" style="margin-bottom: 15px;">
+                    <button class="btn-danger" onclick="batchDeleteMessages()" style="background:#ff4d4f; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">
+                        <i class="fas fa-trash"></i> 批量删除
+                    </button>
+                </div>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f8f9ff; text-align: left;">
+                            <th style="padding:12px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                            <th style="padding:12px;">标题</th>
+                            <th style="padding:12px;">时间</th>
+                            <th style="padding:12px;">状态</th>
+                            <th style="padding:12px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            messages.forEach(message => {
+                const statusText = message.status === 1 ? '已读' : '未读';
+                // 统一使用背景色和文字色
+                const bgColor = message.status === 1 ? '#d4edda' : '#fff3cd';
+                const textColor = message.status === 1 ? '#28a745' : '#856404';
+                const safeTitle = (message.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                tableHtml += `
+                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding:12px;"><input type="checkbox" class="message-checkbox" data-id="${message.id}"></td>
+                        <td style="padding:12px;">${message.title || ''}</td>
+                        <td style="padding:12px;">${message.createTime ? new Date(message.createTime).toLocaleString() : 'N/A'}</td>
+                        <td style="padding:12px;">
+                            <span class="message-status" style="background-color: ${bgColor}; color: ${textColor};">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td style="padding:12px;">
+                            <button class="btn-select" style="padding:5px 12px; font-size:12px;" onclick="viewMessageDetail(${message.id}, '${safeTitle}')">查看详情</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHtml += `</tbody></table>`;
+            
+            messagesList.innerHTML = tableHtml;
+        }
+        
+        // 查看消息详情
+        function viewMessageDetail(messageId, messageTitle) {
+            // 跳转到消息详情页面
+            window.location.href = `message-detail.html?id=${messageId}`;
+        }
+        
+        // 搜索消息
+        function searchMessages() {
+            const searchTerm = document.getElementById('message-search').value.toLowerCase();
+            // 模拟搜索功能
+            loadMessages(); // 实际项目中应根据搜索词筛选数据
+        }
+        
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.message-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+        
+        // 检查是否需要取消全选状态
+        function checkSelectAllStatus() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.message-checkbox');
+            const checkedCount = document.querySelectorAll('.message-checkbox:checked').length;
+            
+            selectAllCheckbox.checked = checkboxes.length === checkedCount;
+        }
+        
+        // 批量删除消息
+        function batchDeleteMessages() {
+            const selectedCheckboxes = document.querySelectorAll('.message-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('请至少选择一条消息');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${selectedCheckboxes.length} 条消息吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            // 获取选中的消息ID
+            const messageIds = Array.from(selectedCheckboxes).map(checkbox => 
+                parseInt(checkbox.getAttribute('data-id'))
+            );
+            
+            // 发送批量删除请求
+            fetch('/api/messages/batch', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageIds)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    alert(`成功删除 ${selectedCheckboxes.length} 条消息！`);
+                    // 重新加载消息列表
+                    loadMessages();
+                } else {
+                    alert('删除失败: ' + (data.msg || '未知错误'));
+                }
+            })
+            .catch(error => {
+                console.error('批量删除消息失败:', error);
+                alert('删除失败，请稍后重试');
+            });
+        }
+        
+        // 页面加载完成后初始化发送消息功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化课程下拉框
+            loadMessageCourses();
+        });
+        
+        // 加载教师的课程列表到发送消息页面
+        function loadMessageCourses() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                return;
+            }
+            
+            fetch(`/api/courses/teacher/${currentUser.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const courseSelect = document.getElementById('message-course');
+                    if (data.code === 200 && data.data) {
+                        // 清空现有选项
+                        courseSelect.innerHTML = '<option value="">请选择课程</option>';
+                        
+                        // 添加新选项
+                        data.data.forEach(course => {
+                            const option = document.createElement('option');
+                            option.value = course.id;
+                            option.textContent = course.courseName;
+                            courseSelect.appendChild(option);
+                        });
+                    } else {
+                        courseSelect.innerHTML = '<option value="">获取课程列表失败</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程列表失败:', error);
+                    const courseSelect = document.getElementById('message-course');
+                    courseSelect.innerHTML = '<option value="">获取课程列表失败</option>';
+                });
+        }
+        
+        // 根据选择的课程加载学生列表
+        function loadMessageStudentsByCourse(courseId) {
+            const container = document.getElementById('message-students-container');
+            
+            if (!courseId) {
+                if (container) {
+                    container.innerHTML = '请选择课程';
+                }
+                return;
+            }
+            
+            // 获取课程的学生列表
+            fetch(`/api/student-courses/course/${courseId}/students`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        if (!container) return;
+                        // 清空现有内容
+                        container.innerHTML = '';
+                        
+                        // 添加复选框列表（每个学生一行，名字在左、勾选框在右）
+                        data.data.forEach(student => {
+                            const row = document.createElement('div');
+                            row.className = 'student-checkbox-row';
+
+                            const nameSpan = document.createElement('span');
+                            nameSpan.textContent = student.realName || student.username || student.id;
+
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.className = 'message-student-checkbox';
+                            checkbox.value = student.id;
+
+                            row.appendChild(nameSpan);
+                            row.appendChild(checkbox);
+                            container.appendChild(row);
+                        });
+                    } else {
+                        if (container) {
+                            container.innerHTML = '获取学生列表失败';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('获取学生列表失败:', error);
+                    if (container) {
+                        container.innerHTML = '获取学生列表失败';
+                    }
+                });
+        }
+        
+        // 全选学生
+        function selectAllStudents() {
+            const checkboxes = document.querySelectorAll('.message-student-checkbox');
+            checkboxes.forEach(cb => { cb.checked = true; });
+        }
+        
+        // 清空所有选择
+        function clearAllStudents() {
+            const checkboxes = document.querySelectorAll('.message-student-checkbox');
+            checkboxes.forEach(cb => { cb.checked = false; });
+        }
+        
+        // 当课程选择改变时加载学生列表
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseSelect = document.getElementById('message-course');
+            if (courseSelect) {
+                courseSelect.addEventListener('change', function() {
+                    const courseId = this.value;
+                    loadMessageStudentsByCourse(courseId);
+                });
+            }
+            
+            // 初始化发送对象选择（默认课程学生）
+            const targetTypeSelect = document.getElementById('teacher-message-target-type');
+            if (targetTypeSelect) {
+                onTeacherMessageTargetTypeChange();
+            }
+        });
+        
+        // 发送消息
+        function sendMessage() {
+            const courseId = document.getElementById('message-course').value;
+            const selectedStudents = Array.from(document.querySelectorAll('.message-student-checkbox:checked')).map(cb => cb.value);
+            const title = document.getElementById('message-title').value;
+            const content = document.getElementById('message-content').value;
+            const resultElement = document.getElementById('message-send-result');
+            
+            if (!courseId || selectedStudents.length === 0 || !title || !content) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写所有必填字段</p>';
+                return;
+            }
+            
+            // 获取当前教师的真实姓名
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            // 准备消息数据
+            const messageData = {
+                title: title,
+                content: content,
+                sender: currentUser.realName, // 使用教师真实姓名作为发送者
+                receiverIds: selectedStudents
+            };
+            
+            // 发送请求到后端发送消息
+            fetch('/api/messages/send-to-students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = '<p style="color: green;">消息发送成功！</p>';
+                    
+                    // 清空表单
+                    document.getElementById('message-course').value = '';
+                    const container = document.getElementById('message-students-container');
+                    if (container) {
+                        container.innerHTML = '请选择课程';
+                    }
+                    document.getElementById('message-title').value = '';
+                    document.getElementById('message-content').value = '';
+                    
+                    // 5秒后清除提示
+                    setTimeout(() => {
+                        resultElement.innerHTML = '';
+                    }, 5000);
+                } else {
+                    resultElement.innerHTML = `<p style="color: #ff5b5b;">消息发送失败: ${data.msg}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('消息发送失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">消息发送失败，请稍后重试</p>';
+            });
+        }
+        
+        // 教师端：切换“发送对象”（课程学生 / 管理员）时显示对应表单
+        function onTeacherMessageTargetTypeChange() {
+            const typeSelect = document.getElementById('teacher-message-target-type');
+            const studentBlock = document.getElementById('send-to-student-block');
+            const adminBlock = document.getElementById('send-to-admin-block-teacher');
+            if (!typeSelect || !studentBlock || !adminBlock) return;
+            
+            const value = typeSelect.value;
+            if (value === 'admin') {
+                studentBlock.style.display = 'none';
+                adminBlock.style.display = 'block';
+            } else {
+                studentBlock.style.display = 'block';
+                adminBlock.style.display = 'none';
+            }
+        }
+        
+        // 发送消息给管理员
+        function sendMessageToAdmin() {
+            const title = document.getElementById('admin-message-title').value;
+            const content = document.getElementById('admin-message-content').value;
+            const resultElement = document.getElementById('admin-message-send-result');
+            
+            if (!title || !content) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请填写标题和内容</p>';
+                return;
+            }
+            
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">请先登录</p>';
+                return;
+            }
+            
+            // 获取管理员ID
+            fetch('/api/users/admin')
+                .then(response => response.json())
+                .then(adminData => {
+                    if (adminData.code === 200 && adminData.data) {
+                        const messageData = {
+                            // 使用 type: 'admins'，让后端给所有管理员账号都发一份
+                            type: 'admins',
+                            title: title,
+                            content: content,
+                            sender: `${currentUser.realName || currentUser.username} (教师)`
+                        };
+                        
+                        fetch('/api/messages/send', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(messageData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 200) {
+                                resultElement.innerHTML = '<p style="color: green;">消息发送成功！</p>';
+                                
+                                // 清空表单
+                                document.getElementById('admin-message-title').value = '';
+                                document.getElementById('admin-message-content').value = '';
+                                
+                                // 5秒后清除提示
+                                setTimeout(() => {
+                                    resultElement.innerHTML = '';
+                                }, 5000);
+                            } else {
+                                resultElement.innerHTML = '<p style="color: #ff5b5b;">发送失败: ' + data.msg + '</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('发送消息失败:', error);
+                            resultElement.innerHTML = '<p style="color: #ff5b5b;">发送消息失败，请稍后重试</p>';
+                        });
+                    } else {
+                        resultElement.innerHTML = '<p style="color: #ff5b5b;">获取管理员信息失败</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取管理员信息失败:', error);
+                    resultElement.innerHTML = '<p style="color: #ff5b5b;">获取管理员信息失败，请稍后重试</p>';
+                });
+        }
+    </script>
+</body>
+</html>

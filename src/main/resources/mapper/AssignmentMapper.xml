@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.course.mapper.AssignmentMapper">
+
+    <select id="getAssignmentsByCourseId" resultType="com.example.course.vo.AssignmentVO">
+        SELECT a.id, a.title, a.description, a.course_id, c.course_name, a.deadline, a.attachment_path, a.create_time, a.update_time
+        FROM assignment a
+        LEFT JOIN course c ON a.course_id = c.id
+        WHERE a.course_id = #{courseId}
+    </select>
+
+    <select id="getAssignmentDetail" resultType="com.example.course.vo.AssignmentVO">
+        SELECT a.id, a.title, a.description, a.course_id, c.course_name, a.deadline, a.attachment_path, a.create_time, a.update_time
+        FROM assignment a
+        LEFT JOIN course c ON a.course_id = c.id
+        WHERE a.id = #{assignmentId}
+    </select>
+</mapper>

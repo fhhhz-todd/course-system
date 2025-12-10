@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TQMS - 课程管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4; /* 图片中的主紫色 */
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- 侧边栏 --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* --- 主内容区 --- */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- 卡片容器 --- */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        /* --- 搜索栏 --- */
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #e0e5f2;
+            border-radius: 30px;
+            background: #f4f7fe;
+            outline: none;
+        }
+
+        /* --- 表格样式 --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-transform: uppercase;
+            padding: 15px;
+            border-bottom: 1px solid #e0e5f2;
+        }
+
+        td {
+            padding: 18px 15px;
+            font-size: 15px;
+            border-bottom: 1px solid #f4f7fe;
+        }
+
+        /* --- 按钮 --- */
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .btn-select:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 状态进度条 (仿图) */
+        .capacity-bar {
+            width: 100px;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .capacity-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* 底部退出 */
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* 导航链接 */
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f4f7fe;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #e0e5f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shield-halved"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i> 首页
+        </button>
+        <button class="menu-item active">
+            <i class="fas fa-book-open"></i> 课程管理
+        </button>
+        <button class="menu-item" onclick="window.location.href='assignments.html'">
+            <i class="fas fa-file-alt"></i> 作业管理
+        </button>
+        <button class="menu-item" onclick="window.location.href='students.html'">
+            <i class="fas fa-graduation-cap"></i> 学生管理
+        </button>
+        <button class="menu-item" onclick="window.location.href='submissions.html'">
+            <i class="fas fa-upload"></i> 作业提交
+        </button>
+        
+        <button class="menu-item logout-btn">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">课程管理</h1>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span>管理员</span>
+                <div style="width:40px; height:40px; border-radius:50%; background:#e0e5f2;"></div>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="courses.html" class="nav-link">课程管理</a>
+            <a href="assignments.html" class="nav-link">作业管理</a>
+            <a href="students.html" class="nav-link">学生管理</a>
+            <a href="submissions.html" class="nav-link">作业提交</a>
+        </div>
+
+        <div id="courses-list">
+            <div class="search-box">
+                <input type="text" placeholder="搜索课程、教师..." id="search-input">
+                <button class="btn-select" onclick="searchCourses()">搜索</button>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>所有课程</h2>
+                    <button class="btn-select" onclick="showAddForm()">添加课程</button>
+                </div>
+                
+                <div id="courses-result">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>课程名称</th>
+                                <th>描述</th>
+                                <th>教师ID</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="course-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align:center;">点击"刷新列表"加载课程数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn-outline" onclick="loadCourses()">刷新列表</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-course-form" class="card" style="display:none;">
+            <h2>添加新课程</h2>
+            <div class="form-group">
+                <label>课程名称</label>
+                <input type="text" id="course-name" placeholder="请输入课程名称">
+            </div>
+            <div class="form-group">
+                <label>课程描述</label>
+                <textarea id="course-description" placeholder="请输入课程描述" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>教师ID</label>
+                <input type="number" id="teacher-id" placeholder="请输入教师ID">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-select" onclick="addCourse()">保存课程</button>
+                <button class="btn-outline" onclick="cancelAdd()">取消</button>
+            </div>
+            <div id="add-course-result" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 显示添加课程表单
+        function showAddForm() {
+            document.getElementById('add-course-form').style.display = 'block';
+            document.getElementById('courses-list').style.display = 'none';
+        }
+
+        // 取消添加
+        function cancelAdd() {
+            document.getElementById('add-course-form').style.display = 'none';
+            document.getElementById('courses-list').style.display = 'block';
+        }
+        
+        // 添加课程
+        function addCourse() {
+            const courseName = document.getElementById('course-name').value;
+            const description = document.getElementById('course-description').value;
+            const teacherId = document.getElementById('teacher-id').value;
+            
+            if (!courseName || !teacherId) {
+                alert('课程名称和教师ID不能为空');
+                return;
+            }
+            
+            const requestData = {
+                courseName: courseName,
+                description: description,
+                teacherId: teacherId
+            };
+            
+            fetch('/api/courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('add-course-result').innerText = JSON.stringify(data, null, 2);
+                // 清空表单
+                document.getElementById('course-name').value = '';
+                document.getElementById('course-description').value = '';
+                document.getElementById('teacher-id').value = '';
+                // 重新加载课程列表
+                loadCourses();
+                // 切换回列表视图
+                setTimeout(() => {
+                    cancelAdd();
+                }, 1000);
+            })
+            .catch(error => {
+                document.getElementById('add-course-result').innerText = '错误: ' + error;
+            });
+        }
+
+        // 加载所有课程
+        function loadCourses() {
+            fetch('/api/courses')
+            .then(response => response.json())
+            .then(data => {
+                displayCourses(data.data || data);
+            })
+            .catch(error => {
+                document.getElementById('courses-result').innerText = '错误: ' + error;
+            });
+        }
+        
+        // 搜索课程
+        function searchCourses() {
+            const keyword = document.getElementById('search-input').value;
+            if (!keyword) {
+                loadCourses();
+                return;
+            }
+            
+            // 这里可以根据实际API进行调整
+            fetch(`/api/courses/search?keyword=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => {
+                displayCourses(data.data || data);
+            })
+            .catch(error => {
+                // 如果搜索API不可用，则在前端过滤
+                fetch('/api/courses')
+                .then(response => response.json())
+                .then(allData => {
+                    const filteredData = (allData.data || allData).filter(course => 
+                        course.courseName.includes(keyword) || 
+                        (course.teacherId && course.teacherId.toString().includes(keyword))
+                    );
+                    displayCourses(filteredData);
+                })
+                .catch(error => {
+                    document.getElementById('courses-result').innerText = '错误: ' + error;
+                });
+            });
+        }
+
+        // 显示课程列表
+        function displayCourses(courses) {
+            const tbody = document.getElementById('course-table-body');
+            if (!courses || courses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">暂无课程数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            courses.forEach(course => {
+                html += `
+                    <tr>
+                        <td>${course.id || ''}</td>
+                        <td>${course.courseName || ''}</td>
+                        <td>${course.description || ''}</td>
+                        <td>${course.teacherId || ''}</td>
+                        <td>${course.createTime || ''}</td>
+                        <td>
+                            <button class="btn-danger" onclick="deleteCourse(${course.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // 删除课程
+        function deleteCourse(courseId) {
+            if (!confirm('确定要删除这个课程吗？')) {
+                return;
+            }
+            
+            fetch(`/api/courses/${courseId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('删除成功');
+                loadCourses(); // 重新加载课程列表
+            })
+            .catch(error => {
+                alert('删除失败: ' + error);
+            });
+        }
+
+        // 页面加载时自动获取一次
+        window.onload = loadCourses;
+    </script>
+</body>
+</html>

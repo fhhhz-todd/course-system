@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.course.mapper.CourseMapper">
+
+    <select id="getAllCourses" resultType="com.example.course.vo.CourseVO">
+        SELECT c.id, c.course_code, c.course_name, c.credits, c.description, c.teacher_id, u.real_name AS teacher_name,
+               (SELECT COUNT(*) FROM student_course sc WHERE sc.course_id = c.id) AS student_count
+        FROM course c
+        LEFT JOIN "USER" u ON c.teacher_id = u.id
+    </select>
+
+    <select id="getCoursesByTeacherId" resultType="com.example.course.vo.CourseVO">
+        SELECT c.id, c.course_code, c.course_name, c.credits, c.description, c.teacher_id, u.real_name AS teacher_name,
+               (SELECT COUNT(*) FROM student_course sc WHERE sc.course_id = c.id) AS student_count
+        FROM course c
+        LEFT JOIN "USER" u ON c.teacher_id = u.id
+        WHERE c.teacher_id = #{teacherId}
+    </select>
+    
+    <select id="getCourseById" resultType="com.example.course.vo.CourseVO">
+        SELECT c.id, c.course_code, c.course_name, c.credits, c.description, c.teacher_id, u.real_name AS teacher_name,
+               (SELECT COUNT(*) FROM student_course sc WHERE sc.course_id = c.id) AS student_count
+        FROM course c
+        LEFT JOIN "USER" u ON c.teacher_id = u.id
+        WHERE c.id = #{courseId}
+    </select>
+</mapper>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程详情 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 课程信息样式 */
+        .course-info {
+            margin-bottom: 25px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .info-label {
+            width: 120px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .info-value {
+            flex: 1;
+        }
+        
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-user-graduate"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title" id="course-title">课程详情</h1>
+            <div class="user-info">
+                <span id="user-role">学生</span>
+                <div class="avatar" id="user-avatar">S</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            
+            <div class="course-info">
+                <div class="info-row">
+                    <div class="info-label">课程编号:</div>
+                    <div class="info-value" id="course-code">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">课程名称:</div>
+                    <div class="info-value" id="course-name">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">学分:</div>
+                    <div class="info-value" id="course-credits">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">教师:</div>
+                    <div class="info-value" id="course-teacher">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">描述:</div>
+                    <div class="info-value" id="course-description">-</div>
+                </div>
+            </div>
+            
+            <!-- 原本这里有“课程作业”列表，按你的需求已去掉，只保留课程基本信息 -->
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            loadCourseDetails();
+            // 页面获得焦点时自动刷新课程与作业信息
+            window.addEventListener('focus', function() {
+                updateUserInfoDisplay();
+                loadCourseDetails();
+            });
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示用户信息
+                document.getElementById('user-role').textContent = '学生: ' + currentUser.realName;
+                
+                // 显示头像
+                const element = document.getElementById('user-avatar');
+                if (currentUser.avatar) {
+                    element.innerHTML = `<img src="${currentUser.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    element.textContent = currentUser.realName.charAt(0);
+                }
+            }
+        }
+        
+        // 加载课程详情（只显示课程基本信息，不再展示课程作业列表）
+        function loadCourseDetails() {
+            // 从URL参数获取课程ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('courseId');
+            
+            if (!courseId) {
+                document.getElementById('course-title').textContent = '错误：缺少课程ID';
+                document.getElementById('assignments-list').innerHTML = '<p>无法加载课程信息：缺少课程ID</p>';
+                return;
+            }
+            
+            // 从后端获取课程信息
+            fetch(`/api/courses/${courseId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        const course = data.data;
+                        
+                        // 更新页面标题
+                        document.getElementById('course-title').textContent = course.courseName || '课程详情';
+                        
+                        // 填充课程信息
+                        document.getElementById('course-code').textContent = course.courseCode || '-';
+                        document.getElementById('course-name').textContent = course.courseName || '-';
+                        document.getElementById('course-credits').textContent = course.credits || 0;
+                        document.getElementById('course-teacher').textContent = course.teacherName || course.teacherId || '-';
+                        document.getElementById('course-description').textContent = course.description || '-';
+                        // 不再加载课程作业列表
+                    } else {
+                        document.getElementById('course-title').textContent = '错误：获取课程信息失败';
+                        document.getElementById('assignments-list').innerHTML = `<p>错误详情: ${data.msg || '未知错误'}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取课程信息失败:', error);
+                    document.getElementById('course-title').textContent = '错误：获取课程信息失败';
+                    document.getElementById('assignments-list').innerHTML = `<p>错误详情: ${error.message || '网络错误'}</p>`;
+                });
+        }
+        
+        // 课程详情页不再包含作业列表和提交入口，因此去掉相关 JS 函数
+        
+        // 返回上一层页面
+        function goBack() {
+            // course-detail.html 的上一层是课程列表（#courses），根据角色返回
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (currentUser.role == 2) {
+                window.location.href = 'teacher.html#courses';
+            } else if (currentUser.role == 3) {
+                window.location.href = 'student.html#courses';
+            } else if (currentUser.role == 1) {
+                window.location.href = 'admin.html#courses';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

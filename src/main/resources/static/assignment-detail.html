@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业详情 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+            font-size: 16px;
+        }
+        
+        .btn-select:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-danger {
+            background-color: #ff5b5b;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+            font-size: 16px;
+        }
+        
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e5f2;
+        }
+        
+        th {
+            background-color: #f4f7fe;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-submitted {
+            background-color: #ffebcc;
+            color: #ff9900;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .status-graded {
+            background-color: #d4edda;
+            color: #28a745;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .status-missing {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-chalkboard-teacher"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title" id="assignment-title">作业详情</h1>
+            <div class="user-info">
+                <span id="welcome-message"></span>
+                <div class="avatar" id="user-avatar">T</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            
+            <div id="assignment-info">
+                <h2>作业信息</h2>
+                <div class="info-group">
+                    <p><strong>作业标题:</strong> <span id="detail-title"></span></p>
+                    <p><strong>所属课程:</strong> <span id="detail-course"></span></p>
+                    <p><strong>截止时间:</strong> <span id="detail-deadline"></span></p>
+                    <p><strong>发布时间:</strong> <span id="detail-create-time"></span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>作业描述</h3>
+                    <p id="detail-description"></p>
+                </div>
+            </div>
+            
+            <hr style="margin: 30px 0;">
+            
+            <div id="submissions-summary">
+                <h2>提交情况</h2>
+                <div class="info-group">
+                    <p><strong>应交人数:</strong> <span id="total-students">0</span></p>
+                    <p><strong>已交人数:</strong> <span id="submitted-count">0</span></p>
+                    <p><strong>未交人数:</strong> <span id="missing-count">0</span></p>
+                </div>
+            </div>
+            
+            <hr style="margin: 30px 0;">
+            
+            <div id="submissions-list">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="margin: 0;">学生提交情况</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="file" id="grade-file" accept=".xlsx,.xls" style="display: none;" onchange="handleGradeFileSelect(event)">
+                        <button class="btn-select" onclick="document.getElementById('grade-file').click()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-file-upload"></i> 上传成绩
+                        </button>
+                        <button class="btn-select" onclick="downloadGrades()" style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-file-download"></i> 下载成绩
+                        </button>
+                        <button class="btn-select" onclick="downloadAllAttachments()" style="padding: 8px 16px; background: #17a2b8; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-download"></i> 批量下载附件
+                        </button>
+                    </div>
+                </div>
+                <div id="grade-upload-result" style="margin-bottom: 10px;"></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
+                            <th>学生姓名</th>
+                            <th>提交时间</th>
+                            <th>状态</th>
+                            <th>分数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissions-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 通用的 API 请求函数，自动添加用户信息到请求头
+        function apiRequest(url, options = {}) {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                return Promise.reject(new Error('用户未登录'));
+            }
+            
+            const headers = {
+                'X-User-Id': currentUser.id,
+                'X-User-Role': currentUser.role,
+                ...options.headers
+            };
+            
+            if (!options.headers || !options.headers['Content-Type']) {
+                headers['Content-Type'] = 'application/json';
+            }
+            
+            return fetch(url, {
+                ...options,
+                headers
+            });
+        }
+        
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                // 如果没有登录信息，跳转到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 检查是否传递了作业ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            
+            if (!assignmentId) {
+                document.getElementById('submissions-list').innerHTML = '<p>缺少作业信息</p>';
+                return;
+            }
+            
+            // 显示用户信息
+            updateUserInfoDisplay();
+            
+            // 加载作业详情（会自动加载提交记录）
+            loadAssignmentDetail(assignmentId);
+            
+            // 页面获得焦点时自动刷新当前作业与提交列表
+            window.addEventListener('focus', function() {
+                updateUserInfoDisplay();
+                if (assignmentId) {
+                    // 重新拉取作业与提交，保证“获得焦点时刷新”
+                    loadAssignmentDetail(assignmentId);
+                }
+            });
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示欢迎信息
+                document.getElementById('welcome-message').textContent = '欢迎你，' + currentUser.realName + '！';
+                
+                // 显示头像
+                updateAvatarDisplay('user-avatar', currentUser);
+            }
+        }
+        
+        // 更新头像显示的通用函数
+        function updateAvatarDisplay(elementId, user) {
+            const element = document.getElementById(elementId);
+            if (user.avatar) {
+                element.innerHTML = `<img src="${user.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                element.textContent = user.realName.charAt(0);
+            }
+        }
+        
+        // 存储作业信息
+        let currentAssignment = null;
+        let currentAssignmentId = null;
+        
+        // 加载作业详情
+        function loadAssignmentDetail(assignmentId) {
+            currentAssignmentId = assignmentId;
+            apiRequest(`/api/assignments/${assignmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        currentAssignment = data.data;
+                        // 移除标题开头可能存在的数字（如"1 "）
+                        let title = currentAssignment.title || '作业详情';
+                        // 移除开头的数字和空格，例如 "1 " 或 "1. " 等
+                        title = title.replace(/^\d+[.\s]*\s*/, '');
+                        document.getElementById('assignment-title').textContent = title;
+                        document.getElementById('detail-title').textContent = title;
+                        document.getElementById('detail-course').textContent = currentAssignment.courseName;
+                        document.getElementById('detail-deadline').textContent = currentAssignment.deadline ? new Date(currentAssignment.deadline).toLocaleString() : '无';
+                        document.getElementById('detail-create-time').textContent = currentAssignment.createTime ? new Date(currentAssignment.createTime).toLocaleString() : '无';
+                        document.getElementById('detail-description').textContent = currentAssignment.description || '无';
+                        
+                        // 加载提交记录（需要课程ID）
+                        if (currentAssignment.courseId) {
+                            loadSubmissions(assignmentId, currentAssignment.courseId);
+                        }
+                    } else {
+                        alert('获取作业详情失败: ' + (data.msg || '未知错误'));
+                    }
+                })
+                .catch(error => {
+                    console.error('获取作业详情失败:', error);
+                    alert('获取作业详情失败，请稍后重试');
+                });
+        }
+        
+        // 加载提交记录
+        function loadSubmissions(assignmentId, courseId) {
+            // 并行获取提交记录和课程学生列表
+            Promise.all([
+                apiRequest(`/api/submissions/assignment/${assignmentId}`).then(response => response.json()),
+                fetch(`/api/student-courses/course/${courseId}/students`).then(response => response.json())
+            ])
+                .then(([submissionData, studentData]) => {
+                    let submissions = [];
+                    let totalStudents = 0;
+                    
+                    if (submissionData.code === 200 && submissionData.data) {
+                        submissions = submissionData.data;
+                    }
+                    
+                    if (studentData.code === 200 && studentData.data) {
+                        totalStudents = studentData.data.length;
+                    } else {
+                        // 如果获取学生列表失败，尝试使用课程详情
+                        return fetch(`/api/courses/${courseId}`)
+                            .then(response => response.json())
+                            .then(courseData => {
+                                if (courseData.code === 200 && courseData.data && courseData.data.studentCount !== undefined) {
+                                    totalStudents = courseData.data.studentCount;
+                                }
+                                return { submissions, totalStudents };
+                            })
+                            .catch(() => ({ submissions, totalStudents: 0 }));
+                    }
+                    
+                    return { submissions, totalStudents };
+                })
+                .then(({ submissions, totalStudents }) => {
+                    displaySubmissions(submissions, totalStudents);
+                })
+                .catch(error => {
+                    console.error('获取提交记录失败:', error);
+                    document.getElementById('submissions-tbody').innerHTML = '<tr><td colspan="5">加载提交记录失败，请稍后重试</td></tr>';
+                    // 设置默认值
+                    document.getElementById('total-students').textContent = '0';
+                    document.getElementById('submitted-count').textContent = '0';
+                    document.getElementById('missing-count').textContent = '0';
+                });
+        }
+        
+        // 显示提交记录（现在包含所有学生，包括未提交的）
+        function displaySubmissions(submissions, totalStudents) {
+            const tbody = document.getElementById('submissions-tbody');
+            
+            if (!submissions || submissions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">暂无学生信息</td></tr>';
+                // 更新统计信息
+                document.getElementById('total-students').textContent = totalStudents || 0;
+                document.getElementById('submitted-count').textContent = '0';
+                document.getElementById('missing-count').textContent = totalStudents || 0;
+                return;
+            }
+            
+            let html = '';
+            // 统计已提交和未提交人数
+            let submittedCount = 0;
+            let missingCount = 0;
+            
+            submissions.forEach(submission => {
+                const isNotSubmitted = submission.id == null || submission.status == null; // 未提交
+                
+                if (isNotSubmitted) {
+                    missingCount++;
+                    html += `
+                        <tr>
+                            <td><input type="checkbox" class="submission-checkbox" data-submission-id="" data-student-id="${submission.studentId}" disabled></td>
+                            <td>${submission.studentName || '未知学生'}</td>
+                            <td>-</td>
+                            <td><span class="status-missing">未提交</span></td>
+                            <td>${submission.score !== null && submission.score !== undefined ? submission.score : '-'}</td>
+                            <td>
+                                <button class="btn-select" style="padding: 6px 12px; font-size: 14px;" onclick="viewSubmissionDetailForNotSubmitted('${submission.studentId}', '${submission.studentName}')">查看详情</button>
+                                <button class="btn-select" style="padding: 6px 12px; font-size: 14px; margin-left: 5px; background: #17a2b8; opacity: 0.5;" disabled>下载附件</button>
+                                <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-left: 5px; opacity: 0.5;" disabled>删除</button>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    submittedCount++;
+                    const statusText = submission.status === 1 ? '已批阅' : '已提交未批改';
+                    const statusClass = submission.status === 1 ? 'status-graded' : 'status-submitted';
+                    
+                    const hasAttachment = submission.attachmentPath && submission.attachmentPath.trim() !== '';
+                    html += `
+                        <tr>
+                            <td><input type="checkbox" class="submission-checkbox" data-submission-id="${submission.id}" data-student-id="${submission.studentId || ''}"></td>
+                            <td>${submission.studentName || '未知学生'}</td>
+                            <td>${submission.createTime ? new Date(submission.createTime).toLocaleString() : '无'}</td>
+                            <td><span class="${statusClass}">${statusText}</span></td>
+                            <td>${submission.score !== null && submission.score !== undefined ? submission.score : '-'}</td>
+                            <td>
+                                <button class="btn-select" style="padding: 6px 12px; font-size: 14px;" onclick="viewSubmissionDetail(${submission.id})">查看详情</button>
+                                <button class="btn-select" style="padding: 6px 12px; font-size: 14px; margin-left: 5px; background: #17a2b8;" onclick="downloadSubmissionAttachments(${submission.id}, ${hasAttachment ? 'true' : 'false'})">下载附件</button>
+                                <button class="btn-danger" style="padding: 6px 12px; font-size: 14px; margin-left: 5px;" onclick="deleteSubmission(${submission.id})">删除</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            tbody.innerHTML = html;
+            
+            // 更新统计信息
+            document.getElementById('total-students').textContent = totalStudents || submissions.length;
+            document.getElementById('submitted-count').textContent = submittedCount;
+            document.getElementById('missing-count').textContent = missingCount;
+        }
+        
+        // 查看未提交学生的详情（支持打分）
+        function viewSubmissionDetailForNotSubmitted(studentId, studentName) {
+            // 将学生ID和作业ID传递给详情页面，让详情页面知道这是未提交的情况
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            
+            // 跳转到提交详情页面，使用特殊参数标识未提交
+            window.location.href = `submission-detail.html?submissionId=&studentId=${studentId}&assignmentId=${assignmentId}&notSubmitted=true&studentName=${encodeURIComponent(studentName)}`;
+        }
+        
+        // 查看提交详情
+        function viewSubmissionDetail(submissionId) {
+            // 跳转到提交详情页面，传递assignmentId以便返回
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            window.location.href = `submission-detail.html?submissionId=${submissionId}&assignmentId=${assignmentId}`;
+        }
+        
+        // 删除提交记录
+        function deleteSubmission(submissionId) {
+            if (confirm('确定要删除这条提交记录吗？此操作不可恢复！')) {
+                apiRequest(`/api/submissions/${submissionId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert('删除成功！');
+                        // 重新加载提交记录以更新列表
+                        if (currentAssignmentId && currentAssignment && currentAssignment.courseId) {
+                            loadSubmissions(currentAssignmentId, currentAssignment.courseId);
+                        }
+                    } else {
+                        alert('删除失败: ' + (data.msg || '未知错误'));
+                    }
+                })
+                .catch(error => {
+                    console.error('删除失败:', error);
+                    alert('删除失败，请稍后重试');
+                });
+            }
+        }
+        
+        // 处理成绩文件选择
+        function handleGradeFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            
+            if (!assignmentId) {
+                alert('缺少作业信息');
+                return;
+            }
+            
+            if (!confirm(`确定要上传成绩文件吗？`)) {
+                event.target.value = '';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const resultElement = document.getElementById('grade-upload-result');
+            resultElement.innerHTML = '<p style="color: #5c4cf4;">正在上传...</p>';
+            
+            // 获取当前用户信息用于权限验证
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">用户未登录</p>';
+                event.target.value = '';
+                return;
+            }
+            
+            // 对于FormData，不要设置Content-Type，让浏览器自动设置（包含boundary）
+            fetch(`/api/submissions/assignment/${assignmentId}/upload-grades`, {
+                method: 'POST',
+                headers: {
+                    'X-User-Id': currentUser.id,
+                    'X-User-Role': currentUser.role
+                    // 不设置Content-Type，浏览器会自动设置为multipart/form-data
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    resultElement.innerHTML = `<p style="color: #28a745;">${data.data}</p>`;
+                    // 重新加载提交记录
+                    if (currentAssignmentId && currentAssignment && currentAssignment.courseId) {
+                        loadSubmissions(currentAssignmentId, currentAssignment.courseId);
+                    }
+                    // 3秒后清除提示
+                    setTimeout(() => {
+                        resultElement.innerHTML = '';
+                    }, 3000);
+                } else {
+                    resultElement.innerHTML = `<p style="color: #ff5b5b;">上传失败: ${data.msg || '未知错误'}</p>`;
+                }
+                // 清空文件选择
+                event.target.value = '';
+            })
+            .catch(error => {
+                console.error('上传成绩失败:', error);
+                resultElement.innerHTML = '<p style="color: #ff5b5b;">上传成绩失败，请稍后重试</p>';
+                event.target.value = '';
+            });
+        }
+        
+        // 全选/反选
+        function toggleSelectAll(source) {
+            const checkboxes = document.querySelectorAll('.submission-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = source.checked;
+            });
+        }
+        
+        // 下载单个学生的作业附件（如果没有附件则弹窗提示；使用带身份信息的请求获取二进制内容并触发下载，不跳转当前页）
+        function downloadSubmissionAttachments(submissionId, hasAttachment) {
+            if (!hasAttachment) {
+                alert('该学生没有提交附件');
+                return;
+            }
+            
+            const url = `/api/submissions/${submissionId}/download-attachments`;
+            
+            apiRequest(url, {
+                method: 'GET'
+            }).then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // 后端返回 404 代表这个提交没有附件
+                        alert('该学生没有提交附件');
+                    } else if (response.status === 401 || response.status === 403) {
+                        alert('当前未登录或没有权限下载该附件');
+                    } else {
+                        alert('下载附件失败，请稍后重试');
+                    }
+                    return null;
+                }
+                
+                // 从响应头里解析后端设置的文件名（包含正确后缀）
+                const disposition = response.headers.get('Content-Disposition') || response.headers.get('content-disposition');
+                let fileName = '作业附件';
+                if (disposition) {
+                    // 兼容 filename*=utf-8''xxx 与 filename="xxx" 两种形式
+                    const utf8Match = disposition.match(/filename\*\=utf-8''([^;]+)/i);
+                    const plainMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+                    if (utf8Match && utf8Match[1]) {
+                        try {
+                            fileName = decodeURIComponent(utf8Match[1]);
+                        } catch (e) {
+                            fileName = utf8Match[1];
+                        }
+                    } else if (plainMatch && plainMatch[1]) {
+                        fileName = plainMatch[1];
+                    }
+                }
+                
+                return response.blob().then(blob => ({ blob, fileName }));
+            }).then(result => {
+                if (!result) return;
+                const { blob, fileName } = result;
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = fileName || '作业附件';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+            }).catch(error => {
+                console.error('下载附件失败:', error);
+                alert('下载附件失败，请稍后重试');
+            });
+        }
+        
+        // 批量下载勾选学生的作业附件（未勾选时提示）
+        function downloadAllAttachments() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            
+            if (!assignmentId) {
+                alert('缺少作业信息');
+                return;
+            }
+            
+            const checkedBoxes = Array.from(document.querySelectorAll('.submission-checkbox:checked'));
+            if (checkedBoxes.length === 0) {
+                alert('请先勾选要下载附件的学生');
+                return;
+            }
+            
+            // 过滤掉未提交的学生（submissionId为空），并转换为数字
+            const submissionIds = checkedBoxes
+                .map(cb => cb.getAttribute('data-submission-id'))
+                .filter(id => id && id.trim() !== '')
+                .map(id => parseInt(id, 10))
+                .filter(id => !isNaN(id));
+            
+            if (submissionIds.length === 0) {
+                alert('所选学生均未提交附件');
+                return;
+            }
+            
+            // 构建查询参数，确保传递的是数字数组
+            const query = submissionIds.map(id => `submissionIds=${id}`).join('&');
+            const url = `/api/submissions/assignment/${assignmentId}/download-all-attachments?${query}`;
+            
+            apiRequest(url, {
+                method: 'GET'
+            }).then(response => {
+                if (!response.ok) {
+                    // 批量下载按要求不弹无附件提示，这里只在真正的服务器错误时简单提示
+                    if (response.status >= 500) {
+                        alert('批量下载失败，请稍后重试');
+                    }
+                    return null;
+                }
+                return response.blob();
+            }).then(blob => {
+                if (!blob) return;
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = '学生作业附件.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+            }).catch(error => {
+                console.error('批量下载附件失败:', error);
+                alert('批量下载失败，请稍后重试');
+            });
+        }
+        
+        // 下载成绩
+        function downloadGrades() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const assignmentId = urlParams.get('assignmentId');
+            
+            if (!assignmentId) {
+                alert('缺少作业信息');
+                return;
+            }
+            
+            // 获取勾选的学生ID
+            const checkedBoxes = Array.from(document.querySelectorAll('.submission-checkbox:checked'));
+            
+            if (checkedBoxes.length === 0) {
+                alert('请先勾选要下载成绩的学生');
+                return;
+            }
+            
+            // 从复选框获取学生ID
+            const studentIds = checkedBoxes
+                .map(cb => cb.getAttribute('data-student-id'))
+                .filter(id => id && id.trim() !== '');
+            
+            // 构建URL，传递勾选的学生ID列表
+            let url = `/api/submissions/assignment/${assignmentId}/download-grades`;
+            if (studentIds.length > 0) {
+                const query = studentIds.map(id => `studentIds=${encodeURIComponent(id)}`).join('&');
+                url += '?' + query;
+            }
+            
+            // 使用apiRequest下载文件，这样可以携带认证信息
+            // 注意：对于文件下载，不设置Content-Type，让浏览器自动处理
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('用户未登录');
+                return;
+            }
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-User-Id': currentUser.id,
+                    'X-User-Role': currentUser.role
+                    // 不设置Content-Type，让浏览器根据响应自动处理
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        alert('当前未登录或没有权限下载成绩');
+                    } else if (response.status === 404) {
+                        alert('作业不存在');
+                    } else {
+                        alert('下载成绩失败，请稍后重试');
+                    }
+                    return null;
+                }
+                
+                // 从响应头获取文件名
+                const disposition = response.headers.get('Content-Disposition') || response.headers.get('content-disposition');
+                let fileName = '成绩单.xlsx';
+                if (disposition) {
+                    // 兼容 filename*=utf-8''xxx 与 filename="xxx" 两种形式
+                    const utf8Match = disposition.match(/filename\*\=utf-8''([^;]+)/i);
+                    const plainMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+                    if (utf8Match && utf8Match[1]) {
+                        try {
+                            fileName = decodeURIComponent(utf8Match[1]);
+                        } catch (e) {
+                            fileName = utf8Match[1];
+                        }
+                    } else if (plainMatch && plainMatch[1]) {
+                        fileName = plainMatch[1];
+                        // 确保文件名有.xlsx后缀
+                        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+                            fileName += '.xlsx';
+                        }
+                    }
+                }
+                
+                return response.blob().then(blob => ({ blob, fileName }));
+            }).then(result => {
+                if (!result) return;
+                const { blob, fileName } = result;
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+            }).catch(error => {
+                console.error('下载成绩失败:', error);
+                alert('下载成绩失败，请稍后重试');
+            });
+        }
+        
+        // 返回上一层页面
+        function goBack() {
+            // assignment-detail.html 的上一层是 teacher.html#assignments
+            window.location.href = 'teacher.html#assignments';
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

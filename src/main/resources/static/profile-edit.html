@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改个人信息 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e5f2;
+            border-radius: 12px;
+            background: #f4f7fe;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+            font-size: 16px;
+        }
+        
+        .btn-select:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+        <button class="menu-item active">
+            <i class="fas fa-user"></i> 我的信息
+        </button>
+        
+        <button class="menu-item logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">修改个人信息</h1>
+            <div class="user-info">
+                <span id="user-role"></span>
+                <div class="avatar" id="user-avatar"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>个人信息</h2>
+            <div class="avatar-upload">
+                <div class="avatar-preview" id="avatar-preview">
+                    <span id="avatar-text"></span>
+                </div>
+                <div>
+                    <p>上传头像</p>
+                    <input type="file" id="avatar-file" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                    <button class="upload-btn" onclick="document.getElementById('avatar-file').click()">选择图片</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" placeholder="请输入用户名">
+            </div>
+            
+            <div class="form-group">
+                <label for="realname">真实姓名</label>
+                <input type="text" id="realname" placeholder="请输入真实姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <input type="email" id="email" placeholder="请输入邮箱地址">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">手机号</label>
+                <input type="tel" id="phone" placeholder="请输入手机号">
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button class="btn-select" onclick="saveProfile()">保存信息</button>
+                <button class="btn-outline" onclick="resetForm()">重置</button>
+            </div>
+            
+            <div id="result-message" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                // 如果没有登录信息，跳转到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 显示用户信息
+            document.getElementById('user-role').textContent = getUserRoleText(currentUser.role) + ': ' + currentUser.realName;
+            document.getElementById('user-avatar').textContent = currentUser.realName.charAt(0);
+            
+            // 设置头像显示
+            if (currentUser.avatar) {
+                document.getElementById('avatar-preview').innerHTML = `<img src="${currentUser.avatar}" alt="头像">`;
+                document.getElementById('user-avatar').innerHTML = `<img src="${currentUser.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                document.getElementById('avatar-text').textContent = currentUser.realName.charAt(0);
+                document.getElementById('user-avatar').textContent = currentUser.realName.charAt(0);
+            }
+            
+            // 填充表单数据
+            document.getElementById('username').value = currentUser.username || '';
+            document.getElementById('realname').value = currentUser.realName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+        });
+        
+        // 获取用户角色文本
+        function getUserRoleText(role) {
+            switch(role) {
+                case 1: return '管理员';
+                case 2: return '教师';
+                case 3: return '学生';
+                default: return '用户';
+            }
+        }
+        
+        // 预览头像
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // 实时预览上传的图片
+                    document.getElementById('avatar-preview').innerHTML = `<img src="${e.target.result}" alt="头像预览" style="width:100%;height:100%;object-fit:cover;">`;
+                    showMessage('头像已选择，保存后生效', 'success');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // 保存个人信息
+        function saveProfile() {
+            const username = document.getElementById('username').value;
+            const realname = document.getElementById('realname').value;
+            
+            if (!username || !realname) {
+                showMessage('用户名和真实姓名不能为空', 'error');
+                return;
+            }
+
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser || !currentUser.id) {
+                showMessage('登录信息失效，请重新登录', 'error');
+                return;
+            }
+
+            // 调用后端 API 保存数据（写入数据库）
+            fetch(`/api/users/${currentUser.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    realName: realname
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.code === 200 && res.data) {
+                    const updated = res.data;
+                    // 更新 sessionStorage（以便学生端/教师端首页显示同步）
+                    sessionStorage.setItem('currentUser', JSON.stringify({ ...currentUser, ...updated }));
+                    showMessage('个人信息保存成功（已写入数据库）！', 'success');
+
+                    // 刷新顶部显示
+                    document.getElementById('user-role').textContent = getUserRoleText(updated.role) + ': ' + updated.realName;
+                    document.getElementById('user-avatar').textContent = updated.realName.charAt(0);
+                } else {
+                    showMessage('保存失败: ' + (res.msg || '未知错误'), 'error');
+                }
+            })
+            .catch(err => {
+                console.error('保存个人信息失败:', err);
+                showMessage('保存失败，请稍后重试', 'error');
+            });
+        }
+        
+        // 重置表单
+        function resetForm() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            document.getElementById('username').value = currentUser.username || '';
+            document.getElementById('realname').value = currentUser.realName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('avatar-preview').textContent = currentUser.realName.charAt(0);
+            document.getElementById('avatar-file').value = '';
+            showMessage('表单已重置', 'info');
+        }
+        
+        // 显示消息
+        function showMessage(message, type) {
+            const resultElement = document.getElementById('result-message');
+            let className = '';
+            switch(type) {
+                case 'success':
+                    className = 'color: green;';
+                    break;
+                case 'error':
+                    className = 'color: #ff5b5b;';
+                    break;
+                case 'info':
+                    className = 'color: #17a2b8;';
+                    break;
+                default:
+                    className = 'color: #6c757d;';
+            }
+            resultElement.innerHTML = `<p style="${className}">${message}</p>`;
+        }
+        
+        // 返回上一个页面
+        function goBack() {
+            // profile-edit.html 的上一层是我的信息（#profile），根据角色返回
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (currentUser.role == 1) {
+                window.location.href = 'admin.html#profile';
+            } else if (currentUser.role == 2) {
+                window.location.href = 'teacher.html#profile';
+            } else if (currentUser.role == 3) {
+                window.location.href = 'student.html#profile';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

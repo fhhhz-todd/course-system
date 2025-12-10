@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统 - 重定向中</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7fe;
+        }
+        .redirect-message {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .redirect-message h2 {
+            color: #5c4cf4;
+            margin-top: 0;
+        }
+        .redirect-message p {
+            color: #666;
+        }
+        .redirect-message a {
+            color: #5c4cf4;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-message">
+        <h2>正在重定向到登录页面...</h2>
+        <p>如果未自动跳转，请<a href="login.html">点击这里</a></p>
+    </div>
+
+    <script>
+        // 自动重定向到登录页面
+        setTimeout(function() {
+            window.location.href = 'login.html';
+        }, 1000);
+    </script>
+</body>
+</html>

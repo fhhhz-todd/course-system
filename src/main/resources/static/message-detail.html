@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消息详情 - 课程管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5c4cf4;
+            --bg-color: #f4f7fe;
+            --sidebar-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-secondary: #a3aed0;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e0e5f2;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f7f8fe;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            border-right: 4px solid var(--primary-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff5b5b;
+        }
+        
+        /* 消息详情样式 */
+        .message-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e5f2;
+        }
+        
+        .message-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .message-content {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-select {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-select:hover {
+            background-color: #4a3ce0;
+        }
+        
+        /* 消息详情只读：不提供编辑功能 */
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-user-graduate"></i> TQMS
+        </div>
+        <button class="menu-item" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> 返回
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header-top">
+            <h1 class="page-title">消息详情</h1>
+            <div class="user-info">
+                <span id="user-role">学生</span>
+                <div class="avatar" id="user-avatar">S</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            
+            <div class="message-header">
+                <h2 class="message-title" id="message-title">消息标题</h2>
+                <div class="message-meta">
+                    <span><i class="fas fa-user"></i> 发件人: <span id="message-sender">发件人</span></span>
+                    <span><i class="fas fa-clock"></i> 时间: <span id="message-time">时间</span></span>
+                </div>
+            </div>
+            
+            <div class="message-content" id="message-content">
+                消息内容...
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            loadMessageDetail();
+            // 页面获得焦点时刷新，防止后台状态变化看不到
+            window.addEventListener('focus', function() {
+                updateUserInfoDisplay();
+                if (currentMessageId) {
+                    loadMessageDetail();
+                }
+            });
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                // 显示用户信息
+                document.getElementById('user-role').textContent = '学生: ' + currentUser.realName;
+                
+                // 显示头像
+                const element = document.getElementById('user-avatar');
+                if (currentUser.avatar) {
+                    element.innerHTML = `<img src="${currentUser.avatar}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    element.textContent = currentUser.realName.charAt(0);
+                }
+            }
+        }
+        
+        let currentMessageId = null;
+        
+        // 加载消息详情
+        function loadMessageDetail() {
+            // 从URL参数获取消息ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const messageId = urlParams.get('id');
+            currentMessageId = messageId;
+            
+            if (!messageId) {
+                document.getElementById('message-content').textContent = '无法获取消息信息';
+                return;
+            }
+            
+            // 从后端API获取消息详情
+            fetch(`/api/messages/${messageId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        const message = data.data;
+                        
+                        document.getElementById('message-title').textContent = message.title;
+                        document.getElementById('message-sender').textContent = message.sender;
+                        document.getElementById('message-time').textContent = message.createTime ? new Date(message.createTime).toLocaleString() : 'N/A';
+                        document.getElementById('message-content').textContent = message.content;
+                        
+                        // 标记消息为已读（如果当前是未读状态）
+                        if (message.status === 0) {
+                            markMessageAsRead(messageId);
+                        }
+                    } else {
+                        document.getElementById('message-content').textContent = `加载失败: ${data.msg || '未知错误'}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('获取消息详情失败:', error);
+                    document.getElementById('message-content').textContent = '加载消息详情失败，请稍后重试';
+                });
+        }
+        
+        // 标记消息为已读
+        function markMessageAsRead(messageId) {
+            fetch(`/api/messages/${messageId}/read`, {
+                method: 'PUT'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code !== 200) {
+                    console.error('标记已读失败:', data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('标记已读请求失败:', error);
+            });
+        }
+        
+        // 返回上一个页面
+        function goBack() {
+            // message-detail.html 的上一层是消息列表（#messages），根据角色返回
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (currentUser.role == 1) {
+                window.location.href = 'admin.html#messages';
+            } else if (currentUser.role == 2) {
+                window.location.href = 'teacher.html#messages';
+            } else if (currentUser.role == 3) {
+                window.location.href = 'student.html#messages';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // 退出登录功能
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
